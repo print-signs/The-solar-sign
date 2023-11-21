@@ -180,7 +180,7 @@ const Header = () => {
             <LocalMallIcon />
           </Badge>
         </IconButton>
-        <Typography>Cart</Typography>
+        <Typography onClick={() => { navigate('/cart'); handleMobileMenuClose() }}>Cart</Typography>
       </MenuItem>
     </Menu>
   );
