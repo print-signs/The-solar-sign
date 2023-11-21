@@ -69,7 +69,7 @@ const styles = {
 };
 
 const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const addToCartHandler = async () => {
 
@@ -94,9 +94,9 @@ const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
 
   }
 
-  useEffect(() => {
-    dispatch(getSingleProductDetails(id));
-  }, [dispatch, id]);
+  // useEffect(() => {
+  //   dispatch(getSingleProductDetails(id));
+  // }, [dispatch, id]);
 
   return (
     <Grid item mb={3}>
@@ -119,7 +119,7 @@ const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
           width: '90%',
           height: { xs: '20vh', sm: '30vh', md: '30vh' },
         }}>
-          <img src={src} alt={alt} style={{ width: "100%", height: "100%" }} />
+          <img src={src && src} alt={alt} style={{ width: "100%", height: "100%" }} />
         </Grid>
         <Grid>
           <Typography mb={1} sx={styles.nameText}>
