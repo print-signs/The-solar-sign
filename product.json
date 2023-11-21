@@ -1,0 +1,62 @@
+{
+  "success": true,
+  "products": [
+    {
+      "_id": "653f3418602d79e61be895e8",
+      "name": "Pink Roses",
+      "uniqueId": "08782ad55d",
+      "description": "All Pink Roses",
+      "price": 13,
+      "category": "Personal",
+      "image": [
+        {
+          "public_id": "jatinMor/product/dcvfr9unvv1akgvugkpp",
+          "url": "https://res.cloudinary.com/dytknkefn/image/upload/v1698640919/jatinMor/product/dcvfr9unvv1akgvugkpp.png",
+          "_id": "653f3418602d79e61be895e9"
+        }
+      ],
+      "addedBy": "652e271ebb7abbe9af532797",
+      "createdAt": "2023-10-30T04:42:00.587Z",
+      "updatedAt": "2023-10-30T04:42:00.587Z",
+      "__v": 0
+    },
+    {
+      "_id": "6538804ec7fa7bbd8e1ecf81",
+      "name": "ClubHouse_001",
+      "uniqueId": "2ec78f8888",
+      "description": "This way to the club house",
+      "price": 75,
+      "category": "Personal",
+      "image": [
+        {
+          "public_id": "jatinMor/product/cawrzpgi9bh7tsp2xjux",
+          "url": "https://res.cloudinary.com/dytknkefn/image/upload/v1698201677/jatinMor/product/cawrzpgi9bh7tsp2xjux.png",
+          "_id": "6538804ec7fa7bbd8e1ecf82"
+        }
+      ],
+      "addedBy": "652e271ebb7abbe9af532797",
+      "createdAt": "2023-10-25T02:41:18.559Z",
+      "updatedAt": "2023-10-25T02:41:18.559Z",
+      "__v": 0
+    },
+    {
+      "_id": "65387fecc7fa7bbd8e1ecf6d",
+      "name": "Party_001",
+      "uniqueId": "2c7cb16f51",
+      "description": "Party this way with arrow",
+      "price": 75,
+      "category": "Personal",
+      "image": [
+        {
+          "public_id": "jatinMor/product/heuvarbn3vvq1tp9npbx",
+          "url": "https://res.cloudinary.com/dytknkefn/image/upload/v1698201580/jatinMor/product/heuvarbn3vvq1tp9npbx.jpg",
+          "_id": "65387fecc7fa7bbd8e1ecf6e"
+        }
+      ],
+      "addedBy": "652e271ebb7abbe9af532797",
+      "createdAt": "2023-10-25T02:39:40.555Z",
+      "updatedAt": "2023-10-25T02:39:40.555Z",
+      "__v": 0
+    }
+  ]
+}
