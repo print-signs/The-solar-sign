@@ -9,8 +9,9 @@ import { getSingleProductDetails } from "../../store/Actions/productsActions";
 const styles = {
   container: {
     position: "relative",
-    width: "fit-content",
     marginBottom: "0.5rem",
+    width: '18vw',
+    height: '32vh',
   },
   btnBox: {
     display: "flex",
@@ -112,7 +113,12 @@ const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
         </Link>{" "} */}
       </Typography>
       <Link to={`/product/${id}`} style={{ textDecoration: "none" }}>
-        <Grid item sx={styles.container}>
+        <Grid item sx={{
+          position: "relative",
+          marginBottom: "0.5rem",
+          width: '90%',
+          height: { xs: '20vh', sm: '30vh', md: '30vh' },
+        }}>
           <img src={src} alt={alt} style={{ width: "100%", height: "100%" }} />
         </Grid>
         <Grid>
@@ -128,13 +134,13 @@ const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
             </Typography>
           </Box>
         </Grid>
-      </Link>
+      </Link >
       <Box sx={styles.btnBox} onClick={() => addToCartHandler(id)}>
         <CustomButton type="button" wdth="80%">
           Add to cart
         </CustomButton>
       </Box>
-    </Grid>
+    </Grid >
   );
 };
 
