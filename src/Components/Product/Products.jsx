@@ -259,6 +259,7 @@ const Products = () => {
                     discountPrice={item.discountPrice}
                     price={item.price}
                     categories={item.categories}
+                    id={item._id}
                   />
                 </Grid>
               ))
