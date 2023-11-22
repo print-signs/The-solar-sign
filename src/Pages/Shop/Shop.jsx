@@ -81,10 +81,10 @@ const Shop = () => {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const dispatch = useDispatch();
-  const productData = useSelector((state) => state.products.product);
+  const productData = useSelector((state) => state.product.products);
   // console.log(productData);
   useEffect(() => {
-    dispatch(getAllProducts());
+    dispatch(getAllProducts())
   }, [dispatch]);
 
   const handleChange = (event) => {
