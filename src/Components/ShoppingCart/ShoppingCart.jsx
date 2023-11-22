@@ -20,13 +20,15 @@ import TableRow from "@mui/material/TableRow";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CustomButton from "../CustomButton";
-import { increaseQuantity } from "../../store/Actions/cartActions";
-import { decreaseQuantity } from "../../store/Actions/cartActions";
+import {
+  increaseQuantity,
+  getSubTotalPrice,
+  getCartItem,
+  removeItemFromCart,
+  decreaseQuantity
+} from "../../store/Actions/cartActions";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCartItem, removeItemFromCart } from "../../store/Actions/cartActions";
-import { getSubTotalPrice } from "../../store/Actions/priceActions";
-// import { removeItemFromCart } from "../../store/Actions/cartActions";
 const styles = {
   headingStyle: {
     fontFamily: "inter",
@@ -52,8 +54,10 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
 
 
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state.cart);
-  const allSubTotal = useSelector((state) => state.subtotal);
+  const cartItem = useSelector((state) => state.cart.cart);
+
+  // console.log(cartItem);
+  const allSubTotal = useSelector((state) => state.cart.subtotal);
 
   useEffect(() => {
     dispatch(getCartItem());
@@ -63,33 +67,28 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
   const matches = useMediaQuery("(min-width:1200px)");
 
   const handleDecrease = (index) => {
-
     dispatch(decreaseQuantity(cartItem[index].product._id))
     dispatch(getSubTotalPrice())
-
   };
   const handleIncrease = (index) => {
-
     dispatch(increaseQuantity(cartItem[index].product._id));
     dispatch(getSubTotalPrice())
-
   };
 
 
   // remove cart item
   const removeCartItemHandler = (id) => {
-    // console.log(id);
     dispatch(removeItemFromCart(id));
     dispatch(getSubTotalPrice());
     alert("removed")
   }
 
-  const [selectedValue, setSelectedValue] = useState("free");
 
 
 
 
   // Stae for Radio
+  const [selectedValue, setSelectedValue] = useState("free");
 
   // console.log("select value", selectedValue);
   const handleChange = (event) => {

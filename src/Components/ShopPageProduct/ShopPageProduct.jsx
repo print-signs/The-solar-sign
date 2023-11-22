@@ -3,8 +3,7 @@ import CustomButton from "../../Components/CustomButton";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { getSingleProductDetails } from "../../store/Actions/productsActions";
+import { setCartItem } from "../../store/Actions/cartActions";
 
 const styles = {
   container: {
@@ -69,34 +68,15 @@ const styles = {
 };
 
 const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const addToCartHandler = async () => {
-
-    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    const productIndex = existingCart.findIndex(item => item.product._id === product._id);
-
-    if (productIndex !== -1) {
-      existingCart[productIndex].quantity = 1;
-      existingCart[productIndex].subtotal = price;
-    } else {
-      existingCart.push({
-        product: product,
-        quantity: 1,
-        subtotal: price
-      });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(existingCart));
-
+    dispatch(setCartItem(product, 1));
     alert('Added to cart');
 
   }
 
-  // useEffect(() => {
-  //   dispatch(getSingleProductDetails(id));
-  // }, [dispatch, id]);
+
 
   return (
     <Grid item mb={3}>

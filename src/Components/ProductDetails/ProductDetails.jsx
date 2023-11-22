@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleProductDetails } from "../../store/Actions/productsActions";
 import { useParams } from "react-router-dom";
+import { setCartItem } from "../../store/Actions/cartActions";
 const styles = {
   img: {
     width: "100%",
@@ -95,47 +96,28 @@ const ProductDetails = () => {
     if (count > 1) setCount(count - 1);
   };
   const dispatch = useDispatch();
-  const productsDetailsData = useSelector((state) => state.productDetails);
+  const productsDetailsData = useSelector((state) => state.product.productDetails);
+  // console.log(productsDetailsData);
 
 
   const [loading, setLoading] = useState(true);
   const addToCartHandler = () => {
-    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-    const productIndex = existingCart.findIndex((item) => item.product._id === productsDetailsData._id);
-
-    if (productIndex !== -1) {
-      existingCart[productIndex].quantity = count;
-    } else {
-      existingCart.push({
-        product: productsDetailsData,
-        quantity: count,
-        subtotal: count * productsDetailsData.price,
-      });
-    }
-
-    let allSubTotal = JSON.parse(localStorage.getItem('subtotal')) || 0;
-    allSubTotal += count * productsDetailsData.price
-    localStorage.setItem('subtotal', allSubTotal)
-
-    localStorage.setItem('cart', JSON.stringify(existingCart));
-
-
+    dispatch(setCartItem(productsDetailsData, count));
 
     alert('added to cart')
   }
 
   const { id } = useParams();
   useEffect(() => {
-    dispatch(getSingleProductDetails(id))
-      .then(() => setLoading(false))
-      .catch((error) => {
-        // Handle error
+    dispatch(getSingleProductDetails(id)).then(() => setLoading(false))
+      .catch(() => {
         setLoading(false);
       });
+
   }, [dispatch, id]);
-  if (loading) {
+  if (loading || !productsDetailsData) {
     return <>
-      <Typography sx={{ textAlign: 'center', mt: '2rem', fontSize: '20px' }}> Loading...</Typography>
+      <Typography sx={{ textAlign: 'center', mt: '2rem', fontSize: '20px' }}> Loading... </Typography>
     </>
   }
 

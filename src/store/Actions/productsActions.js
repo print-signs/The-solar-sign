@@ -2,9 +2,10 @@ import axios from "axios";
 import {
   getProducts as getProductsAction,
   getProductDetails as getProductDetailsAction,
-} from "../storeSlice";
+} from "../slices/productSlice";
 
 export const getAllProducts = () => async (dispatch) => {
+  // console.log("dfs");
   try {
     const getAllProducts = await axios.get(
       "https://printsigns.onrender.com/api/product/getAll/"
@@ -14,6 +15,7 @@ export const getAllProducts = () => async (dispatch) => {
       return false;
     } else {
       const productsData = getAllProducts.data;
+      // console.log(productsData);
       dispatch(getProductsAction(productsData));
       return true;
     }
