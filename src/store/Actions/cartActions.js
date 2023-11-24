@@ -1,4 +1,4 @@
-// import axios from "axios";
+
 import {
     getCart as getCartAction,
     increaseCartQuantity as increaseCartQuantityAction,
@@ -31,13 +31,17 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
     try {
         const cartItemString = localStorage.getItem('cart');
         if (!cartItemString) {
-            localStorage.setItem('cart', JSON.stringify({
+            let cartArr = [];
+            cartArr.push({
                 product: productsDetailsData,
                 quantity: qty,
                 subtotal: qty * productsDetailsData.price,
-            }))
+            });
 
-        } else {
+            localStorage.setItem('cart', JSON.stringify(cartArr))
+
+        }
+        else {
             const cartItems = JSON.parse(cartItemString);
             const productIndex = cartItems.findIndex((item) => item.product._id === productsDetailsData._id);
             if (productIndex !== -1) {
