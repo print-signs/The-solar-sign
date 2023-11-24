@@ -43,7 +43,7 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
         }
         else {
             const cartItems = JSON.parse(cartItemString);
-            const productIndex = cartItems.findIndex((item) => item.product._id === productsDetailsData._id);
+            const productIndex = cartItems?.findIndex((item) => item.product._id === productsDetailsData._id);
             if (productIndex !== -1) {
                 cartItems[productIndex].quantity = qty;
                 cartItems[productIndex].subtotal = qty * productsDetailsData.price;
@@ -78,7 +78,7 @@ export const increaseQuantity = (id) => async (dispatch) => {
             return false;
         } else {
             const cartItems = JSON.parse(cartItemString);
-            const updatedCart = cartItems.map((item) => {
+            const updatedCart = cartItems?.map((item) => {
                 if (item.product._id === id) {
                     allSubTotal += Number(item.product.price)
                     return { ...item, quantity: item.quantity + 1, subtotal: item.subtotal + item.product.price };
@@ -103,7 +103,7 @@ export const decreaseQuantity = (id) => async (dispatch) => {
             return false;
         } else {
             const cartItems = JSON.parse(cartItemString);
-            const updatedCart = cartItems.map((item) => {
+            const updatedCart = cartItems?.map((item) => {
                 if (item.product._id === id && item.quantity > 1) {
                     allSubTotal -= item.product.price;
                     return { ...item, quantity: item.quantity - 1, subtotal: item.subtotal - item.product.price };
@@ -126,7 +126,7 @@ export const removeItemFromCart = (id) => (dispatch) => {
             return false;
         } else {
             const cartItems = JSON.parse(cartItemString);
-            const updatedCart = cartItems.filter((item) => item.product._id !== id);
+            const updatedCart = cartItems?.filter((item) => item.product._id !== id);
             localStorage.setItem('cart', JSON.stringify(updatedCart));
             localStorage.setItem('tax', 0);
             dispatch(removeCartItemAction(updatedCart))
@@ -146,7 +146,7 @@ export const getSubTotalPrice = () => async (dispatch) => {
         } else {
             const cartItems = JSON.parse(cartItemString);
             let subtotal = 0;
-            cartItems.map((item) => {
+            cartItems?.map((item) => {
                 subtotal += item.subtotal;
             });
             localStorage.setItem('subtotal', subtotal)
@@ -154,7 +154,7 @@ export const getSubTotalPrice = () => async (dispatch) => {
         }
     }
     catch (error) {
-        console.log("error in getAllProducts action", error.message);
+        console.log("error in getSubTotalPrice action", error.message);
 
     }
 }

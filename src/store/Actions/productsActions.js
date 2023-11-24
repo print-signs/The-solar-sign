@@ -38,7 +38,7 @@ export const getSingleProductDetails = (id) => async (dispatch) => {
       return true;
     }
   } catch (error) {
-    console.log("error in getAllProducts action", error.message);
+    console.log("error in getSingleProductDetails action", error.message);
   }
 };
 
