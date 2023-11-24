@@ -18,6 +18,7 @@ import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import mapImage from "../../assets/images/mapImage.png";
 import { useState } from "react";
+import axios from "axios";
 const styles = {
   img: {
     width: "100%",
@@ -35,10 +36,48 @@ const ContactUs = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [feedback, setFeedBack] = useState("");
+  const [sending, setSending] = useState(false);
   const matches = useMediaQuery("(min-width:900px)");
-  const handelSubmit = (e) => {
+
+  const handleFeedback = (message) => {
+    setFeedBack(message);
+    setTimeout(() => {
+      setFeedBack(""); // Clear feedback after 1 second
+    }, 1000); // 1000 milliseconds = 1 second
+  };
+  const handelSubmit = async (e) => {
     e.preventDefault();
-    console.log(name, email, message);
+    if (!name || !email || !message) {
+      return;
+    }
+    setSending(true);
+    const formData = new FormData();
+    formData.set("name", name);
+    formData.set("EmailOrMobile", email);
+
+    formData.set("message", message);
+
+    const res = await axios.post(
+      "https://printsigns.onrender.com" + "/api/contact/request/new/",
+      formData,
+      {
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/formdata",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
+    if (res.status === 201) {
+      setSending(false);
+      setName("");
+      setEmail(""), setMessage("");
+      handleFeedback("Message sent successfully");
+    } else {
+      setSending(false);
+      handleFeedback("something went worng");
+    }
   };
   return (
     <div>
@@ -69,7 +108,7 @@ const ContactUs = () => {
             variant="h3"
             sx={{
               fontFamily: "Poppins",
-              fontSize: 54,
+              fontSize: matches ? 54 : 30,
               fontStyle: "normal",
               fontWeight: 500,
               lineHeight: "58px", // It's a string value in Material-UI sx prop
@@ -329,7 +368,7 @@ const ContactUs = () => {
         >
           <Box flexGrow={1} marginRight={!matches ? 0 : 5}>
             <form onSubmit={handelSubmit}>
-              <InputLabel htmlFor="name">FULL NAME</InputLabel>
+              <InputLabel htmlFor="name">FULL NAME*</InputLabel>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -342,7 +381,7 @@ const ContactUs = () => {
                 onChange={(e) => setName(e.target.value)}
                 id="name"
               />
-              <InputLabel htmlFor="name">EMAIL ADDRESS</InputLabel>
+              <InputLabel htmlFor="name">EMAIL ADDRESS*</InputLabel>
               <TextField
                 variant="outlined"
                 fullWidth
@@ -356,10 +395,11 @@ const ContactUs = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 id="name"
               />
-              <InputLabel htmlFor="name">MESSAGE</InputLabel>
+              <InputLabel htmlFor="name">MESSAGE*</InputLabel>
               <TextField
                 variant="outlined"
                 fullWidth
+                required
                 multiline
                 rows={4}
                 placeholder="Message"
@@ -374,6 +414,7 @@ const ContactUs = () => {
                 // variant="contained"
                 type="submit"
                 disableElevation
+                disabled={sending}
                 sx={{
                   backgroundColor: "#141718",
                   color: "#fff",
@@ -395,6 +436,24 @@ const ContactUs = () => {
             <img src={mapImage} width={"100%"} alt="map" />
           </Box>
         </Box>
+        {feedback && (
+          <Box
+            sx={{
+              position: "absolute",
+              color: "green",
+              fontWeight: "bold",
+              top: "100vh",
+              right: "50px",
+              // height: "50px",
+              background: "#F3F5F7",
+              padding: "1rem",
+            }}
+          >
+            <Typography variant="h6" color={"green"}>
+              {feedback}
+            </Typography>
+          </Box>
+        )}
         <Grid
           container
           sx={{ mb: 5 }}
