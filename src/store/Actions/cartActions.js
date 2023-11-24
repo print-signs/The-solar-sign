@@ -31,7 +31,11 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
     try {
         const cartItemString = localStorage.getItem('cart');
         if (!cartItemString) {
-            return false;
+            localStorage.setItem('cart', {
+                product: productsDetailsData,
+                quantity: qty,
+                subtotal: qty * productsDetailsData.price,
+            })
         } else {
             const cartItems = JSON.parse(cartItemString);
             const productIndex = cartItems.findIndex((item) => item.product._id === productsDetailsData._id);
