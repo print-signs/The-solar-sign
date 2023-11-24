@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleProductDetails } from "../../store/Actions/productsActions";
 import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+
 const styles = {
   img: {
     width: "100%",
@@ -104,10 +106,11 @@ export default function ProductDetails() {
     dispatch(getSingleProductDetails(id));
   }, [dispatch, id]);
 
-
   const addToCartHandler = () => {
-    const existingCart = JSON.parse(localStorage.getItem('cart')) || [];
-    const productIndex = existingCart.findIndex((item) => item.product._id === productsDetailsData._id);
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const productIndex = existingCart.findIndex(
+      (item) => item.product._id === productsDetailsData._id
+    );
 
     if (productIndex !== -1) {
       existingCart[productIndex].quantity = count;
@@ -119,17 +122,15 @@ export default function ProductDetails() {
       });
     }
 
-    let allSubTotal = JSON.parse(localStorage.getItem('subtotal')) || 0;
-    allSubTotal += count * productsDetailsData.price
-    localStorage.setItem('subtotal', allSubTotal)
+    let allSubTotal = JSON.parse(localStorage.getItem("subtotal")) || 0;
+    allSubTotal += count * productsDetailsData.price;
+    localStorage.setItem("subtotal", allSubTotal);
 
-    localStorage.setItem('cart', JSON.stringify(existingCart));
+    localStorage.setItem("cart", JSON.stringify(existingCart));
 
-
-
-    alert('added to cart')
-  }
-
+    // alert('added to cart')
+    toast.success("item added to cart!");
+  };
 
   return (
     <Container>
@@ -163,14 +164,13 @@ export default function ProductDetails() {
                   }}
                 /> */}
 
-                {productsDetailsData.image &&
+                {productsDetailsData.image && (
                   <img
                     src={productsDetailsData.image[0].url}
                     alt={"alt"}
                     style={styles.img}
                   />
-
-                }
+                )}
                 {/* <ArrowForwardIcon
                   fontSize="large"
                   style={styles.backwordArrow}
@@ -290,7 +290,10 @@ export default function ProductDetails() {
                   WishList
                 </Button>
               </Box>
-              <Box sx={{ display: "flex", py: 2, fontFamily: "Inter" }} onClick={addToCartHandler}>
+              <Box
+                sx={{ display: "flex", py: 2, fontFamily: "Inter" }}
+                onClick={addToCartHandler}
+              >
                 <CustomButton wdth={"100%"}>Add To Cart</CustomButton>
               </Box>
               <Divider />

@@ -6,6 +6,8 @@ import {
   RouterProvider,
   createRoutesFromElements,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
 import Root from "./Components/Root";
 import SignIn from "./Components/SignUpSignin/SignIn";
 import SignUp from "./Components/SignUpSignin/SignUp";
@@ -39,7 +41,12 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster />
+    </>
+  );
 }
 
 export default App;

@@ -13,6 +13,9 @@ const CustomButton = ({ type, children, wdth }) => {
         borderRadius: "5px",
         fontFamily: "Inter",
         textTransform: "none",
+        "&:hover": {
+          backgroundColor: "#F3F5F7",
+        },
         width: `${wdth}`,
       }}
     >

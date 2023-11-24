@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 import InstagramImages from "../Data/InstagramImages";
 import BrandData from "../Data/BrandData";
 import ServicesCardData from "../Data/ServicesCardData";
@@ -14,6 +20,7 @@ import axios from "axios";
 
 const Home = () => {
   const [categories, setCategories] = React.useState([]);
+  const [loading, setLaoding] = useState(false);
 
   const imageStyle = {
     maxWidth: "100%",
@@ -40,11 +47,14 @@ const Home = () => {
   }
 
   const getCategories = async () => {
+    setLaoding(true);
+
     const response = await axios.get(
       "https://printsigns.onrender.com" + "/api/category/getCategories"
     );
     if (response.status === 200) {
       setCategories(response.data.categories);
+      setLaoding(false);
     }
   };
   React.useEffect(() => {
@@ -173,6 +183,9 @@ const Home = () => {
             fontWeight: 500,
             lineHeight: "2.75rem",
             letterSpacing: "-0.025rem",
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "2rem",
           }}
         >
           Categories
@@ -186,19 +199,41 @@ const Home = () => {
           modules={[Pagination]}
           className="mySwiper"
         >
-          {categories.map((category) => (
-            <SwiperSlide key={category._id}>
-              <Product
-                src={category.categoryImage.secure_url}
-                alt={category.categoryName}
-                categoryName={category.categoryName}
-                style={{
-                  width: "auto",
-                  margin: "10px 10px",
-                }}
-              />
-            </SwiperSlide>
-          ))}
+          {loading && loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "2rem",
+              }}
+            >
+              <CircularProgress color="inherit" />
+            </Box>
+          ) : categories.length > 0 ? (
+            categories.map((category) => (
+              <SwiperSlide key={category._id}>
+                <Product
+                  src={category.categoryImage.secure_url}
+                  alt={category.categoryName}
+                  categoryName={category.categoryName}
+                  style={{
+                    width: "auto",
+                    margin: "10px 10px",
+                  }}
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: "2rem",
+              }}
+            >
+              No Category Available !
+            </Box>
+          )}
         </Swiper>
       </Container>
 

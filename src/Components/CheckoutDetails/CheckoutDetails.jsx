@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Box,
@@ -13,6 +13,14 @@ import {
 } from "@mui/material";
 import CustomButton from "../CustomButton";
 import ShoppingCartData from "../../Data/ShoppingCartData";
+import PaypalPayment from "../Paypalpatment/PaypalPayment.jsx";
+import toast from "react-hot-toast";
+import { isAutheticated } from "../../Auth";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+import swal from "sweetalert";
+import axios from "axios";
+import { red } from "@mui/material/colors";
 
 const styles = {
   formStyle: {
@@ -59,7 +67,13 @@ const ReusableInputField = ({ label, placeholder, name, type }) => (
   </FormControl>
 );
 
-const ReusableRadioBox = ({ value, label, selectedValue, onChange }) => (
+const ReusableRadioBox = ({
+  value,
+  label,
+  selectedValue,
+  onChangeCheck,
+  handleDelete,
+}) => (
   <Box
     sx={{
       display: "flex",
@@ -67,23 +81,24 @@ const ReusableRadioBox = ({ value, label, selectedValue, onChange }) => (
       borderRadius: "5px",
       margin: "2%",
       marginLeft: "0",
-      cursor: "pointer",
+      // cursor: "pointer",
       backgroundColor: selectedValue === value ? "#F3F5F7" : "transparent",
       "&:hover": {
         backgroundColor: "#F3F5F7",
       },
     }}
-    onClick={() => onChange(value)}
   >
     <Radio
       checked={selectedValue === value}
-      onChange={() => onChange(value)}
+      onChange={() => onChangeCheck(value)}
       sx={{
         color: "black",
         "&.Mui-checked": {
           color: "black",
         },
+        cursor: "pointer",
       }}
+      //  onClick={() => onChange(value)}
     />
     <Box
       sx={{
@@ -97,12 +112,163 @@ const ReusableRadioBox = ({ value, label, selectedValue, onChange }) => (
     >
       <Typography sx={innerText}>{label}</Typography>
     </Box>
+
+    <Box
+      sx={{
+        display: "flex",
+
+        p: 3,
+        color: red[600],
+        cursor: "pointer",
+      }}
+    >
+      <DeleteIcon onClick={() => handleDelete(value)} />
+    </Box>
   </Box>
 );
 
 const CheckoutDetails = ({ handleplaceOrderClick }) => {
-  const [selectedValue, setSelectedValue] = useState("free");
+  const [selectedValue, setSelectedValue] = useState(null);
+  console.log("selectedValue", selectedValue);
+  const [userAllAddress, setUserAllAddress] = useState([]);
+  const [successs, setSuccess] = useState(true);
 
+  const token = isAutheticated();
+  //get user Address if exist
+  const getUserAddress = () => {
+    // setLoading(true);
+    axios
+      .get(`/api/shipping/address/user/address`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setUserAllAddress(res.data?.UserShippingAddress || []);
+        // toast.success(res.data.message ? res.data.message : "Address fetch!");
+
+        // setLoading(false);
+      })
+      .catch((error) => {
+        // setLoading(false);
+        toast.error(
+          error.response.data.message
+            ? error.response.data.message
+            : "Something went wrong!"
+        );
+      });
+  };
+  useEffect(() => {
+    getUserAddress();
+  }, [successs]);
+  //
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState({
+    first_Name: "",
+    last_Name: "",
+    phone_Number: Number,
+    street: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
+
+  console.log(data);
+  const handleChange = (e) => {
+    setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+  //delete self  Address
+  const handleDelete = (id) => {
+    console.log(id);
+    swal({
+      title: "Are you sure?",
+      icon: "error",
+      buttons: {
+        Yes: { text: "Yes", value: true },
+        Cancel: { text: "Cancel", value: "cancel" },
+      },
+    }).then((value) => {
+      if (value === true) {
+        axios
+          .delete(`/api/shipping/address/delete/${id}`, {
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((res) => {
+            setSuccess((prev) => !prev);
+            toast.success(
+              res.data.message ? res.data.message : "Address Added!"
+            );
+          })
+          .catch((error) => {
+            toast.error(
+              error.response.data.message
+                ? error.response.data.message
+                : "Something went wrong!"
+            );
+          });
+      }
+    });
+  };
+
+  ///
+  //add address
+  function handleAddressSubmit() {
+    if (
+      data.first_Name === "" ||
+      data.last_Name === "" ||
+      data.phone_Number === null ||
+      data.street === "" ||
+      data.city === "" ||
+      data.state === "" ||
+      data.postalCode === "" ||
+      data.country === ""
+    ) {
+      swal({
+        title: "Warning",
+        text: "Please fill All mendetory fields ",
+        icon: "warning",
+        button: "ok",
+        dangerMode: true,
+      });
+      return;
+    }
+    setLoading(true);
+    axios
+      .post(
+        `/api/shipping/address/new`,
+        {
+          ...data,
+        },
+
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setLoading(false);
+        setSuccess((prev) => !prev);
+        toast.success(res.data.message ? res.data.message : "Address Added!");
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(
+          error.response.data.message
+            ? error.response.data.message
+            : "Something went wrong!"
+        );
+      });
+  }
+
+  //
   const [quantities, setQuantities] = useState(
     ShoppingCartData.map((item) => item.quantity)
   );
@@ -136,224 +302,262 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
     <Container>
       <Grid container spacing={2}>
         <Grid item xs={12} md={8}>
-          <Box sx={boxStyles}>
-            <form>
-              <Typography sx={headingStyles}>Contact Information</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <FormControl variant="outlined" fullWidth>
-                        <FormHelperText
-                          id="outlined-weight-helper-text"
-                          sx={styles.formStyle}
-                        >
-                          FIRST NAME*
-                        </FormHelperText>
-                        <OutlinedInput
-                          size="small"
-                          id="outlined-adornment-weight"
-                          placeholder="First name"
-                          aria-describedby="outlined-weight-helper-text"
-                          name="firstname"
-                          required
-                          type="text"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl variant="outlined" fullWidth>
-                        <FormHelperText
-                          id="outlined-weight-helper-text"
-                          sx={styles.formStyle}
-                        >
-                          LAST NAME*
-                        </FormHelperText>
-                        <OutlinedInput
-                          size="small"
-                          id="outlined-adornment-weight"
-                          placeholder="Last name"
-                          aria-describedby="outlined-weight-helper-text"
-                          name="lastname"
-                          required
-                          type="text"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined">
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={styles.formStyle}
-                    >
-                      PHONE NUMBER*
-                    </FormHelperText>
-                    <OutlinedInput
-                      size="small"
-                      id="outlined-adornment-weight"
-                      placeholder="Phone name"
-                      aria-describedby="outlined-weight-helper-text"
-                      name="phonenumber"
-                      required
-                      type="number"
-                    //   value={accountDetails.firstname}
-                    //   onChange={handerInputChanges}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined">
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={styles.formStyle}
-                    >
-                      EMAIL ADDRESS*
-                    </FormHelperText>
-                    <OutlinedInput
-                      size="small"
-                      id="outlined-adornment-weight"
-                      placeholder="Your Email"
-                      aria-describedby="outlined-weight-helper-text"
-                      name="email"
-                      required
-                      type="email"
-                    //   value={accountDetails.email}
-                    //   onChange={handerInputChanges}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </form>
-          </Box>
+          {userAllAddress.length > 0 && (
+            <Box sx={boxStyles}>
+              <form>
+                <Typography sx={headingStyles}>Use This Address</Typography>
+                <Grid container spacing={2}>
+                  {/* <Grid item xs={12}>
+                  <Grid container spacing={2}></Grid>
+                </Grid> */}
 
-          <Box sx={boxStyles}>
-            <form>
-              <Typography sx={headingStyles}>Shipping Address</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
+                  {userAllAddress.length > 0 && (
                     <Grid item xs={12}>
-                      <FormControl variant="outlined" fullWidth>
-                        <FormHelperText
-                          id="outlined-weight-helper-text"
-                          sx={styles.formStyle}
-                        >
-                          STREET ADDRESS*
-                        </FormHelperText>
-                        <OutlinedInput
-                          size="small"
-                          id="outlined-adornment-weight"
-                          placeholder="Street Address"
-                          aria-describedby="outlined-weight-helper-text"
-                          name="streetaddress"
-                          required
-                          type="text"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
-                        />
+                      <FormControl fullWidth>
+                        {userAllAddress.map((i, id) => (
+                          <>
+                            <ReusableRadioBox
+                              value={i?._id}
+                              label={`${i?.first_Name} ${i?.last_Name},${i?.postalCode},
+                            ${i?.street},
+                            ${i?.city},
+                            ${i?.state},
+                            ${i?.country} \n\n Phone:${i?.phone_Number} `}
+                              selectedValue={selectedValue}
+                              onChangeCheck={setSelectedValue}
+                              handleDelete={handleDelete}
+                            />
+                          </>
+                        ))}
+                        {/* <ReusableRadioBox
+                        value="free"
+                        label="Free Shipping"
+                        selectedValue={selectedValue}
+                        onChange={setSelectedValue}
+                      />
+                      <ReusableRadioBox
+                        value="free"
+                        label="Free Shipping"
+                        selectedValue={selectedValue}
+                        onChange={setSelectedValue}
+                      /> */}
                       </FormControl>
                     </Grid>
-                  </Grid>
+                  )}
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControl variant="outlined" fullWidth>
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={styles.formStyle}
-                    >
-                      COUNTRY*
-                    </FormHelperText>
-                    <OutlinedInput
-                      size="small"
-                      id="outlined-adornment-weight"
-                      placeholder="Country"
-                      aria-describedby="outlined-weight-helper-text"
-                      name="country"
-                      required
-                      type="text"
-                    //   value={accountDetails.firstname}
-                    //   onChange={handerInputChanges}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth variant="outlined">
-                    <FormHelperText
-                      id="outlined-weight-helper-text"
-                      sx={styles.formStyle}
-                    >
-                      TOWN CITY*
-                    </FormHelperText>
-                    <OutlinedInput
-                      size="small"
-                      id="outlined-adornment-weight"
-                      placeholder="Town City"
-                      aria-describedby="outlined-weight-helper-text"
-                      name="towncity"
-                      required
-                      type="text"
-                    //   value={accountDetails.firstname}
-                    //   onChange={handerInputChanges}
-                    />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <FormControl variant="outlined" fullWidth>
-                        <FormHelperText
-                          id="outlined-weight-helper-text"
-                          sx={styles.formStyle}
-                        >
-                          STATE*
-                        </FormHelperText>
-                        <OutlinedInput
-                          size="small"
-                          id="outlined-adornment-weight"
-                          placeholder="State"
-                          aria-describedby="outlined-weight-helper-text"
-                          name="state"
-                          required
-                          type="text"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl variant="outlined" fullWidth>
-                        <FormHelperText
-                          id="outlined-weight-helper-text"
-                          sx={styles.formStyle}
-                        >
-                          ZIP CODE*
-                        </FormHelperText>
-                        <OutlinedInput
-                          size="small"
-                          id="outlined-adornment-weight"
-                          placeholder="Zip Code"
-                          aria-describedby="outlined-weight-helper-text"
-                          name="zipcode"
-                          required
-                          type="number"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
-                        />
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </form>
-          </Box>
+              </form>
+            </Box>
+          )}
+          {userAllAddress.length < 3 && (
+            <Box sx={boxStyles}>
+              <form>
+                <Typography sx={headingStyles}>
+                  {userAllAddress.length > 0
+                    ? "Add New Shipping Address"
+                    : "Shipping Address"}
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            FIRST NAME*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="First name"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="first_Name"
+                            required
+                            type="text"
+                            onChange={(e) => handleChange(e)}
 
-          <Box sx={boxStyles}>
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            LAST NAME*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="Last name"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="last_Name"
+                            required
+                            type="text"
+                            onChange={(e) => handleChange(e)}
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth variant="outlined">
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            PHONE NUMBER*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="Phone name"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="phone_Number"
+                            required
+                            type="number"
+                            onChange={(e) => handleChange(e)}
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl variant="outlined" fullWidth>
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            STREET ADDRESS*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="Street Address"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="street"
+                            required
+                            type="text"
+                            onChange={(e) => handleChange(e)}
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl variant="outlined" fullWidth>
+                      <FormHelperText
+                        id="outlined-weight-helper-text"
+                        sx={styles.formStyle}
+                      >
+                        COUNTRY*
+                      </FormHelperText>
+                      <OutlinedInput
+                        size="small"
+                        id="outlined-adornment-weight"
+                        placeholder="Country"
+                        aria-describedby="outlined-weight-helper-text"
+                        name="country"
+                        required
+                        type="text"
+                        onChange={(e) => handleChange(e)}
+                        //   value={accountDetails.firstname}
+                        //   onChange={handerInputChanges}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="outlined">
+                      <FormHelperText
+                        id="outlined-weight-helper-text"
+                        sx={styles.formStyle}
+                      >
+                        TOWN CITY*
+                      </FormHelperText>
+                      <OutlinedInput
+                        size="small"
+                        id="outlined-adornment-weight"
+                        placeholder="Town City"
+                        aria-describedby="outlined-weight-helper-text"
+                        name="city"
+                        required
+                        type="text"
+                        onChange={(e) => handleChange(e)}
+                        //   value={accountDetails.firstname}
+                        //   onChange={handerInputChanges}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            STATE*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="State"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="state"
+                            required
+                            type="text"
+                            onChange={(e) => handleChange(e)}
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <FormControl variant="outlined" fullWidth>
+                          <FormHelperText
+                            id="outlined-weight-helper-text"
+                            sx={styles.formStyle}
+                          >
+                            ZIP CODE*
+                          </FormHelperText>
+                          <OutlinedInput
+                            size="small"
+                            id="outlined-adornment-weight"
+                            placeholder="Zip Code"
+                            aria-describedby="outlined-weight-helper-text"
+                            name="postalCode"
+                            required
+                            type="number"
+                            onChange={(e) => handleChange(e)}
+                            //   value={accountDetails.firstname}
+                            //   onChange={handerInputChanges}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Box
+                          sx={{ my: 1 }}
+                          onClick={(e) => handleAddressSubmit(e)}
+                        >
+                          <CustomButton wdth="100% ">
+                            {loading ? "Loading..." : "Add"}
+                          </CustomButton>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </form>
+            </Box>
+          )}
+          {/* <Box sx={boxStyles}>
             <form>
               <Typography sx={headingStyles}>Payment Method</Typography>
               <ReusableRadioBox
@@ -362,12 +566,10 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                 selectedValue={selectedValue}
                 onChange={setSelectedValue}
               />
-              <ReusableRadioBox
-                value="paypal"
-                label="Paypal"
-                selectedValue={selectedValue}
-                onChange={setSelectedValue}
-              />
+              
+              <Box sx={{ color: "#6C7275", mr: 1 }}>
+                <PaypalPayment handleplaceOrderClick={handleplaceOrderClick} />
+              </Box>
               <Box sx={{ color: "#6C7275", mb: 2 }}>
                 <Divider />
               </Box>
@@ -390,8 +592,8 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                           name="cardnumber"
                           required
                           type="number"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
+                            value={accountDetails.firstname}
+                            onChange={handerInputChanges}
                         />
                       </FormControl>
                     </Grid>
@@ -415,8 +617,8 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                           name="expirationdate"
                           required
                           type="number"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
+                            value={accountDetails.firstname}
+                            onChange={handerInputChanges}
                         />
                       </FormControl>
                     </Grid>
@@ -436,8 +638,8 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                           name="cvccode"
                           required
                           type="number"
-                        //   value={accountDetails.firstname}
-                        //   onChange={handerInputChanges}
+                            value={accountDetails.firstname}
+                            onChange={handerInputChanges}
                         />
                       </FormControl>
                     </Grid>
@@ -445,12 +647,21 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                 </Grid>
               </Grid>
             </form>
-          </Box>
-          <Box sx={{ mb: 5 }} onClick={handleplaceOrderClick}>
+          </Box> */}
+          {/* <Box sx={{ mb: 5 }} onClick={handleplaceOrderClick}>
+
             <CustomButton wdth="100%">Place Order</CustomButton>
-          </Box>
+          </Box> */}
+          {userAllAddress.length > 0 && (
+            <Box sx={{ mb: 5 }}>
+              <PaypalPayment
+                handleplaceOrderClick={handleplaceOrderClick}
+                selectedAddress={selectedValue}
+              />
+            </Box>
+          )}
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} mb={4}>
           <Box sx={boxStyles}>
             <Typography sx={headingStyles}>Order Summary</Typography>
             {ShoppingCartData.map((item, i) => (
@@ -526,7 +737,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                 <Divider style={{ width: "100%", margin: "1rem  0rem" }} />
               </Grid>
             ))}
-            <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
               <Grid item xs={6}>
                 <FormControl variant="outlined" fullWidth>
                   <OutlinedInput
@@ -537,8 +748,8 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                     name="input"
                     required
                     type="text"
-                  //   value={accountDetails.firstname}
-                  //   onChange={handerInputChanges}
+                    //   value={accountDetails.firstname}
+                    //   onChange={handerInputChanges}
                   />
                 </FormControl>
               </Grid>
@@ -553,8 +764,8 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
               <Typography sx={{ color: "#38CB89" }}>
                 -$25.00 [Remove]
               </Typography>
-            </Box>
-            <Divider style={{ width: "100%", margin: "1rem  0rem" }} />
+            </Box> */}
+            {/* <Divider style={{ width: "100%", margin: "1rem  0rem" }} /> */}
             <Box
               sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
             >

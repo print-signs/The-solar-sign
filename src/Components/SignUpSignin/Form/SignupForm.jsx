@@ -15,6 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import CustomButton from "../../../Components/CustomButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const LinkStyle = {
   color: "black",
@@ -49,14 +50,13 @@ const SignupForm = () => {
       if (!user.name || !user.email || !user.password) {
         throw new Error("Fill all fields!");
       }
-      const response = await axios.post(
-        "https://solar-sign-backend.onrender.com/api/customer/register",
-        user
-      );
-      if (response.status === 200) {
+      // https://solar-sign-backend.onrender.com
+      const response = await axios.post("/api/v1/user/register", user);
+      if (response.status === 201) {
         localStorage.setItem("jwtToken", response?.data?.token);
+        console.log(response);
         navigate("/");
-        alert("Registration Successfull");
+        toast.success("Registration Successfull");
       }
     } catch (error) {
       console.log(error.message);
