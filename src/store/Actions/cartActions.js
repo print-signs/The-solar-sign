@@ -31,11 +31,12 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
     try {
         const cartItemString = localStorage.getItem('cart');
         if (!cartItemString) {
-            localStorage.setItem('cart', {
+            localStorage.setItem('cart', JSON.stringify({
                 product: productsDetailsData,
                 quantity: qty,
                 subtotal: qty * productsDetailsData.price,
-            })
+            }))
+
         } else {
             const cartItems = JSON.parse(cartItemString);
             const productIndex = cartItems.findIndex((item) => item.product._id === productsDetailsData._id);
