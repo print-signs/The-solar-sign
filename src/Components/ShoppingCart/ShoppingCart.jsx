@@ -5,12 +5,12 @@ import {
   Grid,
   Paper,
   Radio,
-  TextField,
+  // TextField,
   Typography,
   useMediaQuery,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
-import PercentIcon from "@mui/icons-material/Percent";
+// import PercentIcon from "@mui/icons-material/Percent";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -25,7 +25,8 @@ import {
   getSubTotalPrice,
   getCartItem,
   removeItemFromCart,
-  decreaseQuantity
+  decreaseQuantity,
+  setTaxPrice
 } from "../../store/Actions/cartActions";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -55,6 +56,21 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
 
   const dispatch = useDispatch();
   const cartItem = useSelector((state) => state.cart.cart);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // console.log(cartItem);
   const allSubTotal = useSelector((state) => state.cart.subtotal);
@@ -89,15 +105,20 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
 
   // Stae for Radio
   const [selectedValue, setSelectedValue] = useState("free");
-
-  // console.log("select value", selectedValue);
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
-
+  const taxPrice = useSelector((state) => state.cart.tax)
+  // console.log(taxPrice);
+  // const handleChange = (event) => {
+  //   console.log(event.target.value);
+  //   setSelectedValue(event.target.value);
+  // };
+  const taxHandler = (tax) => {
+    // console.log(tax);
+    dispatch(setTaxPrice(tax))
+    setSelectedValue(tax)
+  }
   const controlProps = (item) => ({
     checked: selectedValue === item,
-    onChange: handleChange,
+    // onChange: handleChange,
     value: item,
     name: "color-radio-button-demo",
     inputProps: { "aria-label": item },
@@ -150,7 +171,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                           <TableCell component="th" scope="row">
                             {/* {row.product} */}
                             <Box sx={{ display: "flex", width: '50%' }}>
-                              <Grid sx={{ width: '50%' }}>
+                              <Grid sx={{ width: '100px', height: "70px", mr: '1rem' }}>
                                 <img style={{ height: '100%', width: '100%' }} src={row.product.image && row.product.image[0].url} alt="" />
                               </Grid>
                               <Grid sx={{ width: '50%' }}>
@@ -267,7 +288,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                   >
                     <Grid item sx={{ width: '70vw' }}>
                       <Box sx={{ display: "flex", }}>
-                        <Grid sx={{ height: '15vh', width: '25vw', display: 'flex', justifyContent: 'center', mr: '1rem' }}>
+                        <Grid sx={{ width: '100px', height: "120px", mr: '1rem', }}>
                           <img style={{ height: '60%', width: '100%' }} src={item.product && item.product.image[0].url} alt="" />
                         </Grid>
                         <Grid >
@@ -296,8 +317,8 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                             sx={{
                               border: "1px solid #6C7275",
                               borderRadius: "4px",
-                              height: "30%",
-                              width: "20vw",
+                              height: "35px",
+                              width: "100px",
                               display: "flex",
                               justifyContent: "space-between",
                               alignItems: "center",
@@ -343,7 +364,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                 ))
               )}
 
-              <Box sx={{ width: { xs: "100%", sm: "60%" }, mt: "5%" }}>
+              {/* <Box sx={{ width: { xs: "100%", sm: "60%" }, mt: "5%" }}>
                 <Typography
                   sx={{
                     fontFamily: "Poppins",
@@ -397,7 +418,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                     Apply
                   </Typography>
                 </Box>
-              </Box>
+              </Box> */}
             </Box>
           </Grid>
 
@@ -432,7 +453,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                     backgroundColor: "#F3F5F7",
                   },
                 }}
-                onClick={() => setSelectedValue("free")}
+                onClick={() => taxHandler("free")}
               >
                 {" "}
                 <Radio
@@ -455,7 +476,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                   }}
                 >
                   <Typography sx={styles.innerText}>Free Shipping</Typography>
-                  <Typography sx={styles.innerText}>%0.00</Typography>
+                  <Typography sx={styles.innerText}>0.00</Typography>
                 </Box>
               </Box>
 
@@ -468,7 +489,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                     backgroundColor: "#F3F5F7",
                   },
                 }}
-                onClick={() => setSelectedValue("express")}
+                onClick={() => taxHandler("express")}
               >
                 {" "}
                 <Radio
@@ -493,7 +514,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                   <Typography sx={styles.innerText}>
                     Express Shipping
                   </Typography>
-                  <Typography sx={styles.innerText}>+15.00</Typography>
+                  <Typography sx={styles.innerText}>+$15</Typography>
                 </Box>
               </Box>
 
@@ -506,7 +527,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                     backgroundColor: "#F3F5F7",
                   },
                 }}
-                onClick={() => setSelectedValue("pick")}
+                onClick={() => taxHandler("pick")}
               >
                 {" "}
                 <Radio
@@ -529,7 +550,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                   }}
                 >
                   <Typography sx={styles.innerText}>Pick Up</Typography>
-                  <Typography sx={styles.innerText}>%21.00</Typography>
+                  <Typography sx={styles.innerText}>0.00</Typography>
                 </Box>
               </Box>
 
@@ -589,7 +610,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                   }}
                 >
                   {/* ${totalPrice}.00 */}
-                  ${allSubTotal}
+                  ${allSubTotal + taxPrice}
                   {/* $550 */}
                 </Typography>
               </Box>
