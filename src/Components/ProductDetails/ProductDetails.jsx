@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSingleProductDetails } from "../../store/Actions/productsActions";
 import { useParams } from "react-router-dom";
 import { setCartItem } from "../../store/Actions/cartActions";
+import { useNavigate } from 'react-router-dom'
 const styles = {
   img: {
     width: "100%",
@@ -87,6 +88,7 @@ const styles = {
 
 const ProductDetails = () => {
   const [count, setCount] = useState(1);
+  const navigate = useNavigate();
 
   const increment = () => {
     setCount(count + 1);
@@ -105,6 +107,7 @@ const ProductDetails = () => {
     dispatch(setCartItem(productsDetailsData, count));
 
     alert('added to cart')
+    navigate('/cart')
   }
 
   const { id } = useParams();

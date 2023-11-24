@@ -6,6 +6,7 @@ import {
     removeCartItem as removeCartItemAction,
     setCart as setCartAction,
     getPrice as getPriceAction,
+    setTax as setTaxAction
 
 } from "../slices/cartSlice";
 
@@ -17,6 +18,7 @@ export const getCartItem = () => async (dispatch) => {
             return false;
         } else {
             const cartItems = JSON.parse(cartItemString);
+
             dispatch(getCartAction(cartItems));
             return true;
         }
@@ -35,6 +37,8 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
             const productIndex = cartItems.findIndex((item) => item.product._id === productsDetailsData._id);
             if (productIndex !== -1) {
                 cartItems[productIndex].quantity = qty;
+                cartItems[productIndex].subtotal = qty * productsDetailsData.price;
+
             } else {
                 cartItems.push({
                     product: productsDetailsData,
@@ -42,7 +46,6 @@ export const setCartItem = (productsDetailsData, qty) => async (dispatch) => {
                     subtotal: qty * productsDetailsData.price,
 
                 });
-                // console.log(cartItems.subtotal);
             }
             let allSubTotal = JSON.parse(localStorage.getItem('subtotal')) || 0;
             allSubTotal += qty * productsDetailsData.price
@@ -116,6 +119,7 @@ export const removeItemFromCart = (id) => (dispatch) => {
             const cartItems = JSON.parse(cartItemString);
             const updatedCart = cartItems.filter((item) => item.product._id !== id);
             localStorage.setItem('cart', JSON.stringify(updatedCart));
+            localStorage.setItem('tax', 0);
             dispatch(removeCartItemAction(updatedCart))
         }
     }
@@ -144,4 +148,15 @@ export const getSubTotalPrice = () => async (dispatch) => {
         console.log("error in getAllProducts action", error.message);
 
     }
+}
+
+
+export const setTaxPrice = (taxType) => async (dispatch) => {
+
+    let taxPrice = localStorage.getItem('tax') ? Number(localStorage.getItem('tax')) : 0
+    taxPrice = taxType === 'express' ? 15 : 0;
+    localStorage.setItem('tax', (taxPrice))
+
+    dispatch(setTaxAction(taxPrice));
+
 }
