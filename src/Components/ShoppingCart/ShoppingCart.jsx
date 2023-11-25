@@ -20,13 +20,15 @@ import TableRow from "@mui/material/TableRow";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import CustomButton from "../CustomButton";
-import { increaseQuantity } from "../../store/Actions/cartActions";
-import { decreaseQuantity } from "../../store/Actions/cartActions";
+import {
+  increaseQuantity,
+  getSubTotalPrice,
+  getCartItem,
+  removeItemFromCart,
+  decreaseQuantity
+} from "../../store/Actions/cartActions";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCartItem, removeItemFromCart } from "../../store/Actions/cartActions";
-import { getSubTotalPrice } from "../../store/Actions/priceActions";
-// import { removeItemFromCart } from "../../store/Actions/cartActions";
 const styles = {
   headingStyle: {
     fontFamily: "inter",
@@ -52,8 +54,10 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
 
 
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state.cart);
-  const allSubTotal = useSelector((state) => state.subtotal);
+  const cartItem = useSelector((state) => state.cart.cart);
+
+  // console.log(cartItem);
+  const allSubTotal = useSelector((state) => state.cart.subtotal);
 
   useEffect(() => {
     dispatch(getCartItem());
@@ -63,33 +67,28 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
   const matches = useMediaQuery("(min-width:1200px)");
 
   const handleDecrease = (index) => {
-
     dispatch(decreaseQuantity(cartItem[index].product._id))
     dispatch(getSubTotalPrice())
-
   };
   const handleIncrease = (index) => {
-
     dispatch(increaseQuantity(cartItem[index].product._id));
     dispatch(getSubTotalPrice())
-
   };
 
 
   // remove cart item
   const removeCartItemHandler = (id) => {
-    // console.log(id);
     dispatch(removeItemFromCart(id));
     dispatch(getSubTotalPrice());
     alert("removed")
   }
 
-  const [selectedValue, setSelectedValue] = useState("free");
 
 
 
 
   // Stae for Radio
+  const [selectedValue, setSelectedValue] = useState("free");
 
   // console.log("select value", selectedValue);
   const handleChange = (event) => {
@@ -151,10 +150,10 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                           <TableCell component="th" scope="row">
                             {/* {row.product} */}
                             <Box sx={{ display: "flex", width: '50%' }}>
-                              <Grid>
+                              <Grid sx={{ width: '50%' }}>
                                 <img style={{ height: '100%', width: '100%' }} src={row.product.image && row.product.image[0].url} alt="" />
                               </Grid>
-                              <Grid>
+                              <Grid sx={{ width: '50%' }}>
                                 <Typography
                                   sx={{
                                     fontFamily: "inter",
@@ -266,9 +265,9 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                     display="flex"
                     justifyContent="space-between"
                   >
-                    <Grid item sx={{ width: '50vw' }}>
+                    <Grid item sx={{ width: '70vw' }}>
                       <Box sx={{ display: "flex", }}>
-                        <Grid sx={{ height: '15vh', width: '15vw', display: 'flex', justifyContent: 'center', mr: '1rem' }}>
+                        <Grid sx={{ height: '15vh', width: '25vw', display: 'flex', justifyContent: 'center', mr: '1rem' }}>
                           <img style={{ height: '60%', width: '100%' }} src={item.product && item.product.image[0].url} alt="" />
                         </Grid>
                         <Grid >
@@ -298,7 +297,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                               border: "1px solid #6C7275",
                               borderRadius: "4px",
                               height: "30%",
-                              width: "100%",
+                              width: "20vw",
                               display: "flex",
                               justifyContent: "space-between",
                               alignItems: "center",
@@ -332,7 +331,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
                           color: "#121212",
                         }}
                       >
-                        {item.price && item.product.price}
+                        {item.product.price && item.product.price}
                       </Typography>
                       <Box onClick={() => removeCartItemHandler(item.product._id)} display="flex" justifyContent="flex-end">
                         <ClearIcon fontSize="medium" />

@@ -14,8 +14,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getSingleProductDetails } from "../../store/Actions/productsActions";
 import { useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-
+import { setCartItem } from "../../store/Actions/cartActions";
+import { useNavigate } from "react-router-dom";
 const styles = {
   img: {
     width: "100%",
@@ -86,10 +86,9 @@ const styles = {
   },
 };
 
-export default function ProductDetails() {
+const ProductDetails = () => {
   const [count, setCount] = useState(1);
-  // const [imgUrl, setImgUrl] = useState(0);
-  // const imgarr = [src1, src2, src3, src4];
+  const navigate = useNavigate();
 
   const increment = () => {
     setCount(count + 1);
@@ -99,226 +98,234 @@ export default function ProductDetails() {
     if (count > 1) setCount(count - 1);
   };
   const dispatch = useDispatch();
-  const productsDetailsData = useSelector((state) => state.productDetails);
-  // console.log("product Details Data", productsDetailsData);
+  const productsDetailsData = useSelector(
+    (state) => state.product.productDetails
+  );
+  // console.log(productsDetailsData);
+
+  const [loading, setLoading] = useState(true);
+  const addToCartHandler = () => {
+    dispatch(setCartItem(productsDetailsData, count));
+
+    alert("added to cart");
+    navigate("/cart");
+  };
+
   const { id } = useParams();
   useEffect(() => {
-    dispatch(getSingleProductDetails(id));
-  }, [dispatch, id]);
-
-  const addToCartHandler = () => {
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const productIndex = existingCart.findIndex(
-      (item) => item.product._id === productsDetailsData._id
-    );
-
-    if (productIndex !== -1) {
-      existingCart[productIndex].quantity = count;
-    } else {
-      existingCart.push({
-        product: productsDetailsData,
-        quantity: count,
-        subtotal: count * productsDetailsData.price,
+    dispatch(getSingleProductDetails(id))
+      .then(() => setLoading(false))
+      .catch(() => {
+        setLoading(false);
       });
-    }
-
-    let allSubTotal = JSON.parse(localStorage.getItem("subtotal")) || 0;
-    allSubTotal += count * productsDetailsData.price;
-    localStorage.setItem("subtotal", allSubTotal);
-
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-
-    // alert('added to cart')
-    toast.success("item added to cart!");
-  };
+  }, [dispatch, id]);
+  if (loading || !productsDetailsData) {
+    return (
+      <>
+        <Typography sx={{ textAlign: "center", mt: "2rem", fontSize: "20px" }}>
+          {" "}
+          Loading...{" "}
+        </Typography>
+      </>
+    );
+  }
 
   return (
     <Container>
-      <Box sx={{ my: 6 }}>
-        {" "}
-        <Typography variant="body2" mb={1}>
-          <Link style={styles.linkStyle} to="/">
-            Home
-          </Link>{" "}
-          &nbsp;{`>`}&nbsp;
-          <Link
-            style={styles.linkStyle}
-            to={`/product/category/${productsDetailsData.category}`}
-          >
-            {productsDetailsData.category}
-          </Link>{" "}
-          &nbsp;{`>`}&nbsp;
-          <Link style={styles.linkStyle} to="/product-details">
-            {productsDetailsData.name}
-          </Link>{" "}
-        </Typography>
-        <Box>
-          <Grid container spacing={5} style={{}}>
-            <Grid item sm={12} xs={12} md={6} xl={6} style={{}}>
-              <Box style={{ position: "relative" }}>
-                {/* <ArrowBackIcon
-                  fontSize="large"
-                  style={styles.forwardArrow}
-                  onClick={() => {
-                    imgUrl == 0 ? setImgUrl(3) : setImgUrl(imgUrl - 1);
-                  }}
-                /> */}
+      {productsDetailsData ? (
+        <Box sx={{ my: 6 }}>
+          {" "}
+          <Typography variant="body2" mb={1}>
+            <Link style={styles.linkStyle} to="/">
+              Home
+            </Link>{" "}
+            &nbsp;{`>`}&nbsp;
+            <Link
+              style={styles.linkStyle}
+              to={`/product/category/${productsDetailsData.category}`}
+            >
+              {productsDetailsData.category}
+            </Link>{" "}
+            &nbsp;{`>`}&nbsp;
+            <Link style={styles.linkStyle} to="/product-details">
+              {productsDetailsData.name}
+            </Link>{" "}
+          </Typography>
+          <Box>
+            <Grid container spacing={5} style={{}}>
+              <Grid item sm={12} xs={12} md={6} xl={6} style={{}}>
+                <Box style={{ position: "relative" }}>
+                  {/* <ArrowBackIcon
+            fontSize="large"
+            style={styles.forwardArrow}
+            onClick={() => {
+              imgUrl == 0 ? setImgUrl(3) : setImgUrl(imgUrl - 1);
+            }}
+          /> */}
 
-                {productsDetailsData.image && (
-                  <img
-                    src={productsDetailsData.image[0].url}
-                    alt={"alt"}
-                    style={styles.img}
-                  />
-                )}
-                {/* <ArrowForwardIcon
-                  fontSize="large"
-                  style={styles.backwordArrow}
-                  onClick={() => {
-                    imgUrl == 3 ? setImgUrl(0) : setImgUrl(imgUrl + 1);
-                  }}
-                /> */}
-              </Box>
+                  {productsDetailsData.image && (
+                    <img
+                      src={productsDetailsData.image[0].url}
+                      alt={"alt"}
+                      style={styles.img}
+                    />
+                  )}
+                  {/* <ArrowForwardIcon
+            fontSize="large"
+            style={styles.backwordArrow}
+            onClick={() => {
+              imgUrl == 3 ? setImgUrl(0) : setImgUrl(imgUrl + 1);
+            }}
+          /> */}
+                </Box>
 
-              {/* <Box
-                display={{ xs: "none", sm: "flex" }}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-                mb={5}
-              >
-                <img
-                  src={src2}
-                  alt={"alt"}
-                  style={styles.anotherImg}
-                  onClick={() => setImgUrl(1)}
-                />
-                <img
-                  src={src3}
-                  alt={"alt"}
-                  style={styles.anotherImg}
-                  onClick={() => setImgUrl(2)}
-                />
-                <img
-                  src={src4}
-                  alt={"alt"}
-                  style={styles.anotherImg}
-                  onClick={() => setImgUrl(3)}
-                />
-              </Box> */}
-            </Grid>
+                {/* <Box
+          display={{ xs: "none", sm: "flex" }}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          mb={5}
+        >
+          <img
+            src={src2}
+            alt={"alt"}
+            style={styles.anotherImg}
+            onClick={() => setImgUrl(1)}
+          />
+          <img
+            src={src3}
+            alt={"alt"}
+            style={styles.anotherImg}
+            onClick={() => setImgUrl(2)}
+          />
+          <img
+            src={src4}
+            alt={"alt"}
+            style={styles.anotherImg}
+            onClick={() => setImgUrl(3)}
+          />
+        </Box> */}
+              </Grid>
 
-            <Grid item sm={12} xs={12} md={6} xl={6}>
-              <Box marginBottom={3}>
-                <Typography
-                  variant="h4"
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "bold",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {productsDetailsData.name}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  style={{
-                    fontFamily: "Inter",
-                    color: "#6C7275",
-                    fontSize: "1rem",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {productsDetailsData.description}
-                </Typography>
-                <Box display={"flex"} alignItems={"center"}>
+              <Grid item sm={12} xs={12} md={6} xl={6}>
+                <Box marginBottom={3}>
                   <Typography
-                    variant="h5"
+                    variant="h4"
                     style={{
                       fontFamily: "Poppins",
                       fontWeight: "bold",
-                      marginRight: "1rem",
+                      marginBottom: "1rem",
                     }}
                   >
-                    ${productsDetailsData.price}
+                    {productsDetailsData.name}
                   </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      fontFamily: "Inter",
+                      color: "#6C7275",
+                      fontSize: "1rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    {productsDetailsData.description}
+                  </Typography>
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Typography
+                      variant="h5"
+                      style={{
+                        fontFamily: "Poppins",
+                        fontWeight: "bold",
+                        marginRight: "1rem",
+                      }}
+                    >
+                      ${productsDetailsData.price}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <ButtonGroup variant="outlined" sx={{ background: "#F5F5F5" }}>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <ButtonGroup
+                    variant="outlined"
+                    sx={{ background: "#F5F5F5" }}
+                  >
+                    <Button
+                      onClick={decrement}
+                      sx={{
+                        width: "100%",
+                        border: "none",
+                        color: "#141718",
+                        "&:hover": {
+                          border: "1px solid #141718",
+                        },
+                        fontFamily: "Inter",
+                      }}
+                    >
+                      -
+                    </Button>
+                    <Box sx={{ p: 2, border: "none", fontFamily: "Inter" }}>
+                      {count}
+                    </Box>
+                    <Button
+                      onClick={increment}
+                      sx={{
+                        border: "none",
+                        color: "#141718",
+                        "&:hover": {
+                          border: "1px solid #141718",
+                        },
+                        fontFamily: "Inter",
+                      }}
+                    >
+                      +
+                    </Button>
+                  </ButtonGroup>
                   <Button
-                    onClick={decrement}
                     sx={{
                       width: "100%",
-                      border: "none",
+                      border: "1px solid #141718",
                       color: "#141718",
-                      "&:hover": {
-                        border: "1px solid #141718",
-                      },
                       fontFamily: "Inter",
+                      marginLeft: "6px",
                     }}
+                    startIcon={<FavoriteBorderIcon />}
                   >
-                    -
+                    WishList
                   </Button>
-                  <Box sx={{ p: 2, border: "none", fontFamily: "Inter" }}>
-                    {count}
-                  </Box>
-                  <Button
-                    onClick={increment}
-                    sx={{
-                      border: "none",
-                      color: "#141718",
-                      "&:hover": {
-                        border: "1px solid #141718",
-                      },
-                      fontFamily: "Inter",
-                    }}
-                  >
-                    +
-                  </Button>
-                </ButtonGroup>
-                <Button
-                  sx={{
-                    width: "100%",
-                    border: "1px solid #141718",
-                    color: "#141718",
-                    fontFamily: "Inter",
-                    marginLeft: "6px",
-                  }}
-                  startIcon={<FavoriteBorderIcon />}
+                </Box>
+                <Box
+                  sx={{ display: "flex", py: 2, fontFamily: "Inter" }}
+                  onClick={addToCartHandler}
                 >
-                  WishList
-                </Button>
-              </Box>
-              <Box
-                sx={{ display: "flex", py: 2, fontFamily: "Inter" }}
-                onClick={addToCartHandler}
-              >
-                <CustomButton wdth={"100%"}>Add To Cart</CustomButton>
-              </Box>
-              <Divider />
+                  <CustomButton wdth={"100%"}>Add To Cart</CustomButton>
+                </Box>
+                <Divider />
 
-              <Box
-                my={3}
-                sx={{
-                  width: { xs: "90%", sm: "60%", md: "60%" },
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box sx={{ display: "flex", flexDirection: "column" }} cursor>
-                  <Typography sx={styles.details}>CATEGORY</Typography>
+                <Box
+                  my={3}
+                  sx={{
+                    width: { xs: "90%", sm: "60%", md: "60%" },
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box sx={{ display: "flex", flexDirection: "column" }} cursor>
+                    <Typography sx={styles.details}>CATEGORY</Typography>
+                  </Box>
+                  <Box>
+                    <Typography sx={{ ...styles.details, color: "#141718" }}>
+                      {productsDetailsData.category}
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box>
-                  <Typography sx={{ ...styles.details, color: "#141718" }}>
-                    {productsDetailsData.category}
-                  </Typography>
-                </Box>
-              </Box>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
+      ) : (
+        <Typography sx={{ textAlign: "center" }}>Loading...</Typography>
+      )}
     </Container>
   );
-}
+};
+
+export default ProductDetails;
