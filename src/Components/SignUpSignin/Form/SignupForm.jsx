@@ -54,7 +54,7 @@ const SignupForm = () => {
       const response = await axios.post("/api/v1/user/register", user);
       if (response.status === 201) {
         localStorage.setItem("jwtToken", response?.data?.token);
-        console.log(response);
+        // console.log(response);
         navigate("/");
         toast.success("Registration Successfull");
       }

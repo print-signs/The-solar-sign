@@ -48,7 +48,7 @@ const SignInForm = () => {
       if (!user.email || !user.password) {
         throw new Error("Fill all fields!");
       }
-      const response = await axios.post("/api/customer/login", user);
+      const response = await axios.post("/api/v1/user/login", user);
       if (response.status === 200) {
         localStorage.setItem("jwtToken", response?.data?.token);
         navigate("/");
