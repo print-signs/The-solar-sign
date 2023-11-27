@@ -84,7 +84,7 @@ const OrderComplete = ({ handlePurchaseClick, orderId, name }) => {
             <CheckIcon sx={{ color: "white" }} />
           </Grid>
           <Grid container mt={1} sx={{ width: "70%" }}>
-            <Grid container sx={styles.orderDetailContainer}>
+            {/* <Grid container sx={styles.orderDetailContainer}>
               <Typography sx={{ ...styles.tHead, width: "60%" }}>
                 {" "}
                 Order code:{" "}
@@ -93,7 +93,7 @@ const OrderComplete = ({ handlePurchaseClick, orderId, name }) => {
                 {" "}
                 {orderId ? orderId : "#0123_45678"}
               </Typography>
-            </Grid>
+            </Grid> */}
 
             <Grid item sx={styles.orderDetailContainer}>
               <Typography sx={{ ...styles.tHead, width: "60%" }}>
