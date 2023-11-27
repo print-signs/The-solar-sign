@@ -9,24 +9,25 @@ import {
 import InstagramImages from "../Data/InstagramImages";
 import BrandData from "../Data/BrandData";
 import ServicesCardData from "../Data/ServicesCardData";
-import CustomButton from "../Components/CustomButton";
-import heroImage from "../assets/images/Hero Image.png";
+// import CustomButton from "../Components/CustomButton";
+// import heroImage from "../assets/images/Hero Image.png";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import Product from "../Components/Product";
 import axios from "axios";
+import Slider from "../Components/HomeSlider/Slider";
 
 const Home = () => {
   const [categories, setCategories] = React.useState([]);
   const [loading, setLaoding] = useState(false);
 
-  const imageStyle = {
-    maxWidth: "100%",
-    height: "auto",
-    display: "block",
-  };
+  // const imageStyle = {
+  //   maxWidth: "100%",
+  //   height: "auto",
+  //   display: "block",
+  // };
 
   const [windowSize, setWindowSize] = useState(getWindowSize());
 
@@ -79,7 +80,8 @@ const Home = () => {
   return (
     <React.Fragment>
       {/* main hero section  */}
-      <Box
+      <Slider />
+      {/* <Box
         sx={{
           background: "#FFC95C",
           height: "auto",
@@ -148,7 +150,7 @@ const Home = () => {
             </Grid>
           </Grid>
         </Container>
-      </Box>
+      </Box> */}
       {/* brands section  */}
       <Container>
         <Swiper

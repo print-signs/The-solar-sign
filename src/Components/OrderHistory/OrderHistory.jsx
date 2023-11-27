@@ -7,6 +7,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Divider, Grid, Typography, useMediaQuery } from "@mui/material";
 import OrderHistoryData from "../../Data/OrderHistoryData";
+import axios from "axios";
+import { isAutheticated } from "../../Auth";
+import { useEffect, useState } from "react";
 const styles = {
   headingStyle: {
     fontFamily: "inter",
@@ -17,6 +20,32 @@ const styles = {
 };
 const OrderHistory = () => {
   const matches = useMediaQuery("(min-width:900px)");
+  const [AllselfOrder, setAllselfOrder] = useState([]);
+  const [orderLoad, setorderLoad] = useState(false);
+
+  const token = isAutheticated();
+  const getAllselfOrder = async () => {
+    try {
+      setorderLoad(true);
+      const response = await axios.get(`/api/order/user/self`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data) {
+        // console.log(response.data);
+        setAllselfOrder(response.data?.order);
+        setorderLoad(false);
+      }
+    } catch (error) {
+      console.error("Error get data:", error.message);
+      setorderLoad(false);
+    }
+  };
+  useEffect(() => {
+    getAllselfOrder();
+  }, []);
   return (
     <div>
       <Typography
@@ -42,33 +71,83 @@ const OrderHistory = () => {
           <Table sx={{ minWidth: 650 }} size="large" aria-label="a dense table">
             <TableHead>
               <TableRow>
-                <TableCell style={styles.headingStyle}>Number ID</TableCell>
+                <TableCell style={styles.headingStyle}>Order ID</TableCell>
                 <TableCell style={styles.headingStyle}>Dates</TableCell>
                 <TableCell style={styles.headingStyle}>Status</TableCell>
                 <TableCell style={styles.headingStyle}>Price</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {OrderHistoryData.map((row) => (
-                <TableRow
-                  key={row.ID}
-                  style={{ padding: "1rem" }}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.ID}
-                  </TableCell>
-                  <TableCell>{row.Date}</TableCell>
-                  <TableCell>{row.Status}</TableCell>
-                  <TableCell>${row.Price}</TableCell>
-                </TableRow>
-              ))}
+              {orderLoad ? (
+                <>
+                  {" "}
+                  <Typography
+                    // variant="h4"
+                    sx={{
+                      // fontFamily: "inter",
+                      textAlign: "center",
+                      fontWeight: "500",
+                      fontSize: "15px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    p={2}
+                  >
+                    Loading...
+                  </Typography>
+                </>
+              ) : AllselfOrder.length > 0 ? (
+                AllselfOrder.map((row, idx) => (
+                  <TableRow
+                    key={idx}
+                    style={{ padding: "1rem" }}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row?.orderID}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(row?.paidAt).toLocaleString("en-IN", {
+                        // weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        hour12: false,
+                      })}
+                    </TableCell>
+                    <TableCell>{row?.orderStatus}</TableCell>
+                    <TableCell>${row?.total_amount}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <>
+                  {" "}
+                  <Typography
+                    // variant="h4"
+                    sx={{
+                      display: "flex",
+                      textAlign: "center",
+
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // textAlign: "center",
+                      fontWeight: "500",
+                      fontSize: "15px",
+                    }}
+                    p={2}
+                  >
+                    No Order PLaced till Now !
+                  </Typography>
+                </>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       )}
       {!matches &&
-        OrderHistoryData.map((item, i) => (
+        AllselfOrder.map((item, i) => (
           <Grid key={i} container spacing={2}>
             <Grid item xs={6} sm={6} md={6} lg={6}>
               <Typography
@@ -80,7 +159,7 @@ const OrderHistory = () => {
                   color: "#6C7275",
                 }}
               >
-                Number ID
+                Order ID
               </Typography>
               <Typography
                 py={1}
@@ -124,7 +203,7 @@ const OrderHistory = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                {item.ID}
+                {item?.orderID}
               </Typography>
               <Typography
                 py={1}
@@ -133,7 +212,16 @@ const OrderHistory = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                {item.Date}
+                {/* {item.Date} */}
+                {new Date(item?.paidAt).toLocaleString("en-IN", {
+                  // weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: false,
+                })}
               </Typography>
               <Typography
                 py={1}
@@ -142,7 +230,7 @@ const OrderHistory = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                {item.Status}
+                {item?.orderStatus}
               </Typography>
               <Typography
                 py={1}
@@ -151,7 +239,7 @@ const OrderHistory = () => {
                   fontSize: "0.8rem",
                 }}
               >
-                {item.Price}
+                ${item?.total_amount}
               </Typography>
             </Grid>
 

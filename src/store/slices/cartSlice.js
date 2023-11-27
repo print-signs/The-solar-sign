@@ -12,7 +12,6 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-
         setCart: (state, action) => {
             state.cart = action.payload;
         },
@@ -35,6 +34,9 @@ const cartSlice = createSlice({
         getPrice: (state, action) => {
             state.subtotal = action.payload
         },
+        setTax: (state, action) => {
+            state.tax = action.payload
+        }
     },
 });
 
@@ -45,7 +47,8 @@ export const {
     decreaseCartQuantity,
     getPrice,
     setCart,
-    removeCartItem
+    removeCartItem,
+    setTax
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

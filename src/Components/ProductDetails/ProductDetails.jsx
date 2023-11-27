@@ -110,6 +110,8 @@ const ProductDetails = () => {
     alert("added to cart");
     navigate("/cart");
   };
+  alert("added to cart");
+  navigate("/cart");
 
   const { id } = useParams();
   useEffect(() => {

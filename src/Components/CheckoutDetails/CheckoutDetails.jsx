@@ -22,6 +22,15 @@ import swal from "sweetalert";
 import axios from "axios";
 import { red } from "@mui/material/colors";
 
+// import ShoppingCartData from "../../Data/ShoppingCartData";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decreaseQuantity,
+  getCartItem,
+  getSubTotalPrice,
+  increaseQuantity,
+} from "../../store/Actions/cartActions";
+
 const styles = {
   formStyle: {
     fontWeight: "700",
@@ -129,7 +138,6 @@ const ReusableRadioBox = ({
 
 const CheckoutDetails = ({ handleplaceOrderClick }) => {
   const [selectedValue, setSelectedValue] = useState(null);
-  console.log("selectedValue", selectedValue);
   const [userAllAddress, setUserAllAddress] = useState([]);
   const [successs, setSuccess] = useState(true);
 
@@ -277,27 +285,24 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
   );
 
   const handleDecrease = (index) => {
-    const updatedQuantities = [...quantities];
-    updatedQuantities[index] = Math.max(1, updatedQuantities[index] - 1);
-    setQuantities(updatedQuantities);
-
-    const updatedIndividualSubtotals = [...individualSubtotals];
-    updatedIndividualSubtotals[index] =
-      updatedQuantities[index] * ShoppingCartData[index].price;
-    setIndividualSubtotals(updatedIndividualSubtotals);
+    dispatch(decreaseQuantity(cartItem[index].product._id));
+    dispatch(getSubTotalPrice());
   };
 
   const handleIncrease = (index) => {
-    const updatedQuantities = [...quantities];
-    updatedQuantities[index] = updatedQuantities[index] + 1;
-    setQuantities(updatedQuantities);
-
-    const updatedIndividualSubtotals = [...individualSubtotals];
-    updatedIndividualSubtotals[index] =
-      updatedQuantities[index] * ShoppingCartData[index].price;
-    setIndividualSubtotals(updatedIndividualSubtotals);
+    dispatch(increaseQuantity(cartItem[index].product._id));
+    dispatch(getSubTotalPrice());
   };
+  const dispatch = useDispatch();
+  const cartItem = useSelector((state) => state.cart.cart);
+  const allSubTotal = useSelector((state) => state.cart.subtotal);
+  console.log(cartItem);
+  // console.log(cartItem);
+  useEffect(() => {
+    dispatch(getCartItem());
 
+    dispatch(getSubTotalPrice());
+  }, [dispatch]);
   return (
     <Container>
       <Grid container spacing={2}>
@@ -664,7 +669,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
         <Grid item xs={12} md={4} mb={4}>
           <Box sx={boxStyles}>
             <Typography sx={headingStyles}>Order Summary</Typography>
-            {ShoppingCartData.map((item, i) => (
+            {cartItem.map((item, i) => (
               <Grid
                 key={i}
                 container
@@ -673,9 +678,13 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                 justifyContent="space-between"
               >
                 <Grid item>
-                  <Box sx={{ display: "flex" }}>
-                    <Grid>
-                      <img src={item.product.src} alt="" />
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Grid sx={{ width: "95px", height: "90px", mr: "1rem" }}>
+                      <img
+                        style={{ width: "100%", height: "100%" }}
+                        src={item.product.image[0].url}
+                        alt=""
+                      />
                     </Grid>
                     <Grid>
                       <Typography
@@ -688,7 +697,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                       >
                         {item.product.name}
                       </Typography>
-                      <Typography
+                      {/* <Typography
                         sx={{
                           fontFamily: "inter",
                           fontWeight: "400",
@@ -697,23 +706,24 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                         }}
                       >
                         Color : {item.product.color}
-                      </Typography>
+                      </Typography> */}
                       <Box
                         sx={{
                           border: "1px solid #6C7275",
                           borderRadius: "4px",
-                          height: "30%",
-                          width: "100%",
+                          height: "35px",
+                          width: "100px",
                           display: "flex",
                           justifyContent: "space-between",
                           alignItems: "center",
+                          my: "1rem",
                         }}
                       >
                         <Typography ml={1} onClick={() => handleDecrease(i)}>
                           -
                         </Typography>
 
-                        {quantities[i]}
+                        {item.quantity}
                         <Typography mr={1} onClick={() => handleIncrease(i)}>
                           +
                         </Typography>
@@ -731,7 +741,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                       color: "#121212",
                     }}
                   >
-                    {item.price}
+                    {item.product.price}
                   </Typography>
                 </Grid>
                 <Divider style={{ width: "100%", margin: "1rem  0rem" }} />
@@ -780,7 +790,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
             >
               <Typography sx={{ fontFamily: "Inter" }}>Subtotal</Typography>
               <Typography sx={{ fontFamily: "Inter", fontWeight: 600 }}>
-                $99.00
+                ${allSubTotal}
               </Typography>
             </Box>
             <Divider style={{ width: "100%", margin: "1rem  0rem" }} />
@@ -797,7 +807,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
                 Total
               </Typography>
               <Typography sx={{ fontFamily: "Inter", fontWeight: 600 }}>
-                $234.00
+                ${allSubTotal}
               </Typography>
             </Box>
           </Box>

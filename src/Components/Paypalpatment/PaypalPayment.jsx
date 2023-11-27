@@ -2,75 +2,68 @@ import React, { useEffect, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { isAutheticated } from "../../Auth";
+import swal from "sweetalert";
+import OrderComplete from "../OrderComplete";
 
 const PaypalPayment = ({ handleplaceOrderClick, selectedAddress }) => {
+  const cartItem = useSelector((state) => state.cart.cart);
+  const allSubTotal = useSelector((state) => state.cart.subtotal);
   const [addressId, setAddressId] = useState(selectedAddress);
-
+  const token = isAutheticated();
   useEffect(() => {
     setAddressId(selectedAddress);
   });
-  console.log("address", addressId);
-
   const [clientId, setClientId] = useState();
   const getclientid = async () => {
-    // console.log("addressId", addressId);
-
     try {
       const resp = await axios.get(`/api/order/clientid/get/`, {
         headers: {
           "Access-Control-Allow-Origin": "*",
-          Authorization: `Bearer {token}`, // Replace {token} with your actual token
+          Authorization: `Bearer ${token}`,
         },
       });
       setClientId(resp.data?.clientId);
     } catch (error) {
       console.error("Error creating order:", error.message);
-      throw error; // Propagate the error for handling in the caller
+      throw error;
     }
   };
   useEffect(() => {
     getclientid();
   });
-
-  useEffect(() => {});
+  //create order
   const createOrder = async (data) => {
     try {
-      console.log("selectedAddress", selectedAddress);
-
       const response = await axios.post(
         `/api/order/checkout/`,
         {
-          product: {
-            name: "apple",
-            quantity: "5",
-          },
-          // cart: [
-          //   {
-          //     id: "YOUR_PRODUCT_ID",
-          //     quantity: "YOUR_PRODUCT_QUANTITY",
-          //   },
-          // ],
-          // }),
+          address: addressId,
+          cart: cartItem,
+          subtotal: allSubTotal,
         },
         {
           headers: {
             "Access-Control-Allow-Origin": "*",
-            Authorization: `Bearer {token}`, // Replace {token} with your actual token
+            Authorization: `Bearer ${token}`, // Replace {token} with your actual token
           },
         }
       );
-      const orderID = response.data?.responseData?.id;
-      console.log("orderID", orderID);
-      return orderID;
+      if (response.data?.responseData?.status === "CREATED") {
+        const product_odrId = response.data?.product_orderId;
+        const orderID = response.data?.responseData?.id;
+        // console.log("product_odrId", product_odrId);
+        return orderID;
+      }
     } catch (error) {
       console.error("Error creating order:", error.message);
-      throw error; // Propagate the error for handling in the caller
     }
   };
   const onApprove = async (data, actions) => {
     const orderID = data.orderID;
     if (!orderID) {
-      console.error("No order ID provided in onApprove");
+      toast.error("No order ID provided for onApprove");
       return;
     }
     try {
@@ -79,8 +72,7 @@ const PaypalPayment = ({ handleplaceOrderClick, selectedAddress }) => {
         `/api/order/${orderID}/capture/payment`,
         {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer {token}`, // Replace {token} with your actual token
+            "Access-Control-Allow-Origin": "*",
           },
         }
       );
@@ -89,11 +81,28 @@ const PaypalPayment = ({ handleplaceOrderClick, selectedAddress }) => {
         const name = captureResponse.data.payer.name.given_name;
         const orderId = captureResponse.data.id;
         // alert(`Transaction completed by ${name},order ID:${orderId}`);
-        actions.redirect(handleplaceOrderClick());
+        toast.success(`Payment Success By ${name}`);
+
+        const additionalData = {
+          orderId: orderId,
+          name: name,
+          date: Date.now(),
+        };
+        // actions.redirect({handleplaceOrderClick() < OrderComplete/>});
+        actions.redirect(<OrderComplete {...additionalData} />);
+        handleplaceOrderClick();
       }
     } catch (error) {
       console.error("Error capturing order:", error.message);
-      actions.redirect();
+      toast.error(`Error capturing order:`);
+      swal({
+        title: "error",
+        text: "Error capturing order ",
+        icon: "error",
+        button: "ok",
+        dangerMode: true,
+      });
+      // actions.redirect();
 
       // Handle error appropriately
     }

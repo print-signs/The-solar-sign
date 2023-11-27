@@ -4,8 +4,11 @@ import redtable from "../../assets/images/table red.png";
 import blacktable from "../../assets/images/table black.png";
 import tableLamp from "../../assets/images/table black.png";
 import PropTypes from "prop-types";
+import CheckIcon from "@mui/icons-material/Check";
+import { Link } from "react-router-dom";
 
-const OrderComplete = ({ handlePurchaseClick }) => {
+const OrderComplete = ({ handlePurchaseClick, orderId, name }) => {
+  console.log("2222222", orderId, name);
   const styles = {
     container: {
       width: { xs: "95vw", sm: "50vw" },
@@ -52,13 +55,14 @@ const OrderComplete = ({ handlePurchaseClick }) => {
     },
     imageBox: { display: "flex", flexWrap: "wrap" },
   };
+  handlePurchaseClick();
   return (
     <Container sx={styles.container}>
       <Paper elevation={3} sx={styles.paper}>
         <Typography sx={styles.thankyou}>Thank you!🎉</Typography>
 
         <Typography sx={styles.message}>
-          Your order has been received
+          {name && name} Your order has been received
         </Typography>
 
         <Grid
@@ -72,11 +76,12 @@ const OrderComplete = ({ handlePurchaseClick }) => {
           }}
         >
           <Grid item>
-            <Grid item sx={styles.imageBox}>
+            {/* <Grid item sx={styles.imageBox}>
               <img style={{ margin: "0.5rem" }} src={redtable} alt="" />
               <img style={{ margin: "0.5rem" }} src={blacktable} alt="" />
               <img style={{ margin: "0.5rem" }} src={tableLamp} alt="" />
-            </Grid>
+            </Grid> */}
+            <CheckIcon sx={{ color: "white" }} />
           </Grid>
           <Grid container mt={1} sx={{ width: "70%" }}>
             <Grid container sx={styles.orderDetailContainer}>
@@ -86,7 +91,7 @@ const OrderComplete = ({ handlePurchaseClick }) => {
               </Typography>
               <Typography sx={{ ...styles.tHead, color: "#141718" }}>
                 {" "}
-                #0123_45678
+                {orderId ? orderId : "#0123_45678"}
               </Typography>
             </Grid>
 
@@ -97,7 +102,16 @@ const OrderComplete = ({ handlePurchaseClick }) => {
               </Typography>
               <Typography sx={{ ...styles.tHead, color: "#141718" }}>
                 {" "}
-                October 19, 2023
+                {/* October 19, 2023 */}
+                {new Date(Date.now()).toLocaleString("en-IN", {
+                  // weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: false,
+                })}
               </Typography>
             </Grid>
 
@@ -110,7 +124,7 @@ const OrderComplete = ({ handlePurchaseClick }) => {
               </Typography>
               <Typography sx={{ ...styles.tHead, color: "#141718" }}>
                 {" "}
-                Credit Card
+                PayPal
               </Typography>
             </Grid>
           </Grid>
@@ -121,11 +135,13 @@ const OrderComplete = ({ handlePurchaseClick }) => {
           mt={5}
           display="flex"
           justifyContent="center"
-          onClick={handlePurchaseClick}
+          // onClick={handlePurchaseClick}
         >
-          <CustomButton type="button" wdth="100%">
-            Pruchase history
-          </CustomButton>
+          <Link to="/account">
+            <CustomButton type="button" wdth="100%">
+              Pruchase history
+            </CustomButton>
+          </Link>
         </Grid>
       </Paper>
     </Container>

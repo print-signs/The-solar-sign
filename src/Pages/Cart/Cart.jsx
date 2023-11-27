@@ -6,7 +6,6 @@ import CheckoutDetails from "../../Components/CheckoutDetails";
 import OrderComplete from "../../Components/OrderComplete";
 import PropTypes from "prop-types";
 
-
 const TabItem = ({
   label,
   active,
@@ -27,8 +26,8 @@ const TabItem = ({
       borderBottom: complete
         ? "2px solid #45B26B"
         : active
-          ? "2px solid black"
-          : "",
+        ? "2px solid black"
+        : "",
     }}
   >
     <IconButton
@@ -73,10 +72,6 @@ TabItem.propTypes = {
 };
 
 const Cart = () => {
-
-
-
-
   const [activeTab, setActiveTab] = React.useState("1");
   const [isShoppingComplete, setIsShoppingComplete] = React.useState(false);
   const [isCheckoutComplete, setIsCheckoutComplete] = React.useState(false);
@@ -133,10 +128,10 @@ const Cart = () => {
           label="Shopping cart"
           active={activeTab === "1"}
           complete={isShoppingComplete}
-          onClick={() => {
-            setActiveTab("1");
-            setIsShoppingComplete(false);
-          }}
+          // onClick={() => {
+          //   setActiveTab("1");
+          //   setIsShoppingComplete(false);
+          // }}
           reference={tab1Ref}
           stepNumber={1}
         />
@@ -144,10 +139,10 @@ const Cart = () => {
           label="Checkout details"
           active={activeTab === "2"}
           complete={isCheckoutComplete}
-          onClick={() => {
-            setActiveTab("2");
-            setIsCheckoutComplete(false);
-          }}
+          // onClick={() => {
+          //   setActiveTab("2");
+          //   setIsCheckoutComplete(false);
+          // }}
           reference={tab2Ref}
           stepNumber={2}
         />
@@ -155,10 +150,10 @@ const Cart = () => {
           label="Order Complete"
           active={activeTab === "3"}
           complete={cartComplete}
-          onClick={() => {
-            setActiveTab("3");
-            setCartComplete(false);
-          }}
+          // onClick={() => {
+          //   setActiveTab("3");
+          //   setCartComplete(false);
+          // }}
           reference={tab3Ref}
           stepNumber={3}
         />
@@ -179,7 +174,7 @@ const Cart = () => {
           {/* <Button onClick={handlePurchaseClick} width="100%">
             Purchase history
           </Button> */}
-          <OrderComplete handlePurchaseClick={handlePurchaseClick} />
+          <OrderComplete handlePlaceOrderClick={handlePlaceOrderClick} />
         </Box>
       )}
     </Container>
