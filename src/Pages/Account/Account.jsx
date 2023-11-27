@@ -18,9 +18,10 @@ import avatar from "../../assets/images/Avatar.png";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import AccountDetails from "../../Components/AccountDetails/AccountDetails";
 import OrderHistory from "../../Components/OrderHistory/OrderHistory";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AccountAddress from "../../Components/AccountAddress/AccountAddress.jsx";
-
+import axios from "axios";
+import { isAutheticated } from "../../Auth";
 
 const activeStyle = {
   color: "black",
@@ -40,6 +41,41 @@ const Account = () => {
   const handleChange = (event) => {
     setActiveTab(event.target.value);
   };
+  const [userAllAddress, setUserAllAddress] = useState([]);
+  const [successs, setSuccess] = useState(true);
+  const [load, setLoading] = useState(false);
+
+  const token = isAutheticated();
+  //get user Address if exist
+  const getUserAddress = () => {
+    setLoading(true);
+    axios
+      .get(`/api/shipping/address/user/address`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setUserAllAddress(res.data?.UserShippingAddress || []);
+        // toast.success(res.data.message ? res.data.message : "Address fetch!");
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(
+          error.response.data.message
+            ? error.response.data.message
+            : "Something went wrong!"
+        );
+      });
+  };
+  useEffect(() => {
+    getUserAddress();
+  }, [successs]);
+  //
   return (
     <Container>
       <Box>
@@ -114,7 +150,7 @@ const Account = () => {
                       <MenuItem value={"Account"}>Account</MenuItem>
                       <MenuItem value={"Address"}>Address</MenuItem>
                       <MenuItem value={"Orders"}>Orders</MenuItem>
-                      <MenuItem value={"Wishlist"}>Wishlist</MenuItem>
+                      {/* <MenuItem value={"Wishlist"}>Wishlist</MenuItem> */}
                       <MenuItem
                         value="Logout"
                         onClick={() => console.log("logout")}
@@ -152,7 +188,7 @@ const Account = () => {
                         <ListItemText primary={"Orders"} />
                       </ListItemButton>
                     </ListItem>
-                    <ListItem disablePadding>
+                    {/* <ListItem disablePadding>
                       <ListItemButton
                         style={
                           activeTab === "Wishlist" ? activeStyle : inActive
@@ -161,7 +197,7 @@ const Account = () => {
                       >
                         <ListItemText padding={0} primary={"Wishlist"} />
                       </ListItemButton>
-                    </ListItem>
+                    </ListItem> */}
                     <ListItem disablePadding>
                       <ListItemButton
                         style={{ padding: "0.5rem 0rem" }}
@@ -187,27 +223,42 @@ const Account = () => {
             {activeTab === "Address" && (
               <Box sx={{ display: "flex" }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
+                  {/* <Grid item xs={12} md={6}>
                     <AccountAddress
                       address1="Sofia Havertz"
                       phoneNumber="(+1) 234 567 890"
                       address2="345 Long Island, New York, United States"
                     />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <AccountAddress
-                      address1="Sofia Havertz"
-                      phoneNumber="(+1) 234 567 890"
-                      address2="345 Long Island, New York, United States"
-                    />
-                  </Grid>
+                  </Grid> */}
+                  {load ? (
+                    <Grid item xs={12} md={6}>
+                      Loading...
+                    </Grid>
+                  ) : userAllAddress.length > 0 ? (
+                    userAllAddress.map((i, it) => (
+                      <Grid item xs={12} md={6}>
+                        <AccountAddress
+                          address1={`${i?.first_Name} ${i?.last_Name} `}
+                          phoneNumber={`${i?.phone_Number}`}
+                          address2={`
+                            ${i?.street},
+                            ${i?.city},
+                            ${i?.state},
+                            ${i?.country},${i?.postalCode}`}
+                        />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12} md={6}>
+                      No Address Added till Now!
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             )}
             {activeTab === "Orders" && (
               <Box>
                 <OrderHistory />
-
               </Box>
             )}
             {activeTab === "Wishlist" && (

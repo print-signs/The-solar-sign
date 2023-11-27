@@ -8,7 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Link } from "react-router-dom";
 
 const OrderComplete = ({ handlePurchaseClick, orderId, name }) => {
-  console.log("2222222", orderId, name);
+  // console.log("2222222", orderId, name);
   const styles = {
     container: {
       width: { xs: "95vw", sm: "50vw" },
@@ -55,7 +55,6 @@ const OrderComplete = ({ handlePurchaseClick, orderId, name }) => {
     },
     imageBox: { display: "flex", flexWrap: "wrap" },
   };
-  handlePurchaseClick();
   return (
     <Container sx={styles.container}>
       <Paper elevation={3} sx={styles.paper}>

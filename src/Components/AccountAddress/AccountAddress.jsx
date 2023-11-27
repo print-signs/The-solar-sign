@@ -39,7 +39,7 @@ const AccountAddress = ({ address1, phoneNumber, address2 }) => {
           position: "relative",
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             position: "absolute",
             top: 0,
@@ -55,7 +55,7 @@ const AccountAddress = ({ address1, phoneNumber, address2 }) => {
         >
           {EditIcon}
           Edit
-        </Box>
+        </Box> */}
 
         <Typography
           sx={{
