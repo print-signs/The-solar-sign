@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import AccountAddress from "../../Components/AccountAddress/AccountAddress.jsx";
 import axios from "axios";
 import { isAutheticated } from "../../Auth";
+import toast from "react-hot-toast";
 
 const activeStyle = {
   color: "black",
@@ -236,7 +237,7 @@ const Account = () => {
                     </Grid>
                   ) : userAllAddress.length > 0 ? (
                     userAllAddress.map((i, it) => (
-                      <Grid item xs={12} md={6}>
+                      <Grid key={i} item xs={12} md={6}>
                         <AccountAddress
                           address1={`${i?.first_Name} ${i?.last_Name} `}
                           phoneNumber={`${i?.phone_Number}`}
