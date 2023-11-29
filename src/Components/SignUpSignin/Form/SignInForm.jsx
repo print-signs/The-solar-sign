@@ -55,8 +55,8 @@ const SignInForm = () => {
         toast.success("Login Successfull");
       }
     } catch (error) {
-      console.log(error.message);
-      toast.error(error.message);
+      // console.log(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setIsloading(false);
     }
@@ -133,13 +133,13 @@ const SignInForm = () => {
               />
             </Stack>
             <Stack>
-              <Link style={LinkStyle}>Forgot Password</Link>
+              <Link to='/forgot-password' style={LinkStyle}>Forgot Password</Link>
             </Stack>
           </Stack>
           {/* <CustomButton>Sign in</CustomButton> */}
           <div onClick={handleLoginSubmit}>
             <CustomButton type="submit" wdth={"100%"}>
-              {isLoading ? <p>Loading...</p> : "Sign In"}
+              {isLoading ? "Loading..." : "Sign In"}
             </CustomButton>
           </div>
 

@@ -18,6 +18,7 @@ import Cart from "./Pages/Cart";
 import Shop from "./Pages/Shop";
 import Products from "./Components/Product/Products";
 import ContactUs from "./Pages/ContactUs";
+import ForgotPassword from './Pages/ForgotPassword'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
 
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
     </React.Fragment>
   )

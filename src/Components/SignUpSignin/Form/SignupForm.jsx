@@ -59,8 +59,8 @@ const SignupForm = () => {
         toast.success("Registration Successfull");
       }
     } catch (error) {
-      console.log(error.message);
-      alert(error.message);
+      console.log(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setIsloading(false);
     }
@@ -152,7 +152,7 @@ const SignupForm = () => {
           </Box>
           <div onClick={handleFormSubmit}>
             <CustomButton type="submit" wdth={"100%"}>
-              {isloading ? <p>Loading...</p> : "Sign Up"}
+              {isloading ? "Loading..." : "Sign Up"}
             </CustomButton>
           </div>
 
