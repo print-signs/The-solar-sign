@@ -1,37 +1,149 @@
-import { Box, Container, FormControl, FormHelperText, OutlinedInput, Stack, Typography } from "@mui/material"
-import CustomButton from "../CustomButton"
-import { useState } from "react"
+import {
+  Box,
+  Container,
+  FormControl,
+  FormHelperText,
+  OutlinedInput,
+  Stack,
+  Typography,
+} from "@mui/material";
+import CustomButton from "../CustomButton";
+import { useEffect, useState } from "react";
+import { isAutheticated } from "../../Auth";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const styles = {
-  formStyle: { fontWeight: '700', fontSize: '12px', fontFamily: 'inter', marginBottom: '3px', marginLeft: '0' }
-}
+  formStyle: {
+    fontWeight: "700",
+    fontSize: "12px",
+    fontFamily: "inter",
+    marginBottom: "3px",
+    marginLeft: "0",
+  },
+};
 
 const AccountDetails = () => {
+  const token = isAutheticated();
   const [accountDetails, setAccountDetails] = useState({
-    firstname: "",
-    lastname: "",
-    displayname: "",
+    name: "",
+
     email: "",
+  });
+  const [passworDetails, setPasswordDetails] = useState({
     oldPassword: "",
     newPassword: "",
-    repeatNewPassword: ""
-  })
-  const handerInputChanges = (e) => {
-    setAccountDetails({ ...accountDetails, [e.target.name]: e.target.value })
-  }
-  const handleInputSubmit = (e) => {
-    e.preventDefault();
-    if (!accountDetails.firstname || !accountDetails.lastname || !accountDetails.displayname || !accountDetails.email) {
+    confirmPassword: "",
+  });
 
-      alert('fill mandatory fields ');
+  console.log(token);
+  const getUserBasicDetails = async () => {
+    try {
+      const res = await axios.get("/api/v1/user/details", {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        console.log(res);
+        setAccountDetails({
+          ...accountDetails,
+          name: res?.data?.user?.name, // Assuming 'name' is one of the fields you receive
+          email: res?.data?.user?.email, // Assuming 'email' is one of the fields you receive
+        });
+      }
+    } catch (error) {
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "Something went wrong!"
+      );
+    }
+  };
+
+  const handelPasswordInputChange = (e) => {
+    setPasswordDetails({ ...passworDetails, [e.target.name]: e.target.value });
+  };
+  const handerInputChanges = (e) => {
+    setAccountDetails({ ...accountDetails, [e.target.name]: e.target.value });
+  };
+  const handelSaveBasicDetails = async (e) => {
+    e.preventDefault();
+    if (!accountDetails.name || !accountDetails.email) {
+      alert("fill mandatory fields ");
       return;
     }
-    alert('Details Updated')
-  }
+
+    try {
+      const response = await axios.put(
+        "/api/v1/user/update/profile",
+        accountDetails,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success("updated basic details  successfully ");
+        return;
+      }
+    } catch (error) {
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "Something went wrong!"
+      );
+    }
+  };
+
+  console.log(passworDetails);
+  const handelUpdatePassword = async () => {
+    if (
+      !passworDetails.oldPassword ||
+      !passworDetails.newPassword ||
+      !passworDetails.confirmPassword
+    ) {
+      alert("fill mandatory fields ");
+      return;
+    }
+    if (passworDetails.newPassword !== passworDetails.confirmPassword) {
+      alert("New password and Confirm password must be same");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        "/api/v1/user/password/update",
+        passworDetails,
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 201) {
+        toast.success("Password updated successfully");
+        return;
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message
+          ? error.response.data.message
+          : "Something went wrong!"
+      );
+    }
+  };
+  useEffect(() => {
+    getUserBasicDetails();
+  }, []);
   // console.log(accountDetails);
   return (
     <Container>
-      <form autoComplete="off" onSubmit={handleInputSubmit}>
+      <form autoComplete="off" onSubmit={handelSaveBasicDetails}>
         <Stack spacing={{ xs: 2, sm: 1 }} width={{ xs: 300, sm: 700 }}>
           <Typography
             variant="h4"
@@ -45,72 +157,20 @@ const AccountDetails = () => {
               id="outlined-weight-helper-text"
               sx={styles.formStyle}
             >
-              FIRST NAME*
+              NAME*
             </FormHelperText>
             <OutlinedInput
               size="small"
               id="outlined-adornment-weight"
-              placeholder="First name"
+              placeholder="Name"
+              label=""
               aria-describedby="outlined-weight-helper-text"
-              name="firstname"
+              name="name"
               required
               type="text"
-              value={accountDetails.firstname}
+              value={accountDetails.name}
               onChange={handerInputChanges}
             />
-          </FormControl>
-
-          <FormControl id="fullWidth" variant="outlined">
-            <FormHelperText
-              id="outlined-weight-helper-text"
-              sx={styles.formStyle}
-            >
-              LAST NAME*
-            </FormHelperText>
-            <OutlinedInput
-              size="small"
-              id="outlined-adornment-weight"
-              placeholder="Last name"
-              aria-describedby="outlined-weight-helper-text"
-              name="lastname"
-              required
-              type="text"
-              value={accountDetails.lastname}
-              onChange={handerInputChanges}
-            />
-          </FormControl>
-
-          <FormControl id="fullWidth" variant="outlined">
-            <FormHelperText
-              id="outlined-weight-helper-text"
-              sx={styles.formStyle}
-            >
-              DISPLAY NAME*
-            </FormHelperText>
-            <OutlinedInput
-              size="small"
-              id="outlined-adornment-weight"
-              placeholder="Display name"
-              aria-describedby="outlined-weight-helper-text"
-              name="displayname"
-              required
-              type="text"
-              value={accountDetails.displayname}
-              onChange={handerInputChanges}
-            />
-            <FormHelperText
-              id="outlined-weight-helper-text"
-              sx={{
-                fontFamily: "inter",
-                fontWeight: "400",
-                fontStyle: "italic",
-                fontSize: "12px",
-                marginLeft: "0",
-              }}
-            >
-              This will be how your name will be displayed in the account
-              section and in reviews
-            </FormHelperText>
           </FormControl>
 
           <FormControl id="fullWidth" variant="outlined">
@@ -124,6 +184,8 @@ const AccountDetails = () => {
               size="small"
               id="outlined-adornment-weight"
               placeholder="Email"
+              label=""
+              readOnly={true}
               aria-describedby="outlined-weight-helper-text"
               name="email"
               required
@@ -132,7 +194,19 @@ const AccountDetails = () => {
               onChange={handerInputChanges}
             />
           </FormControl>
-
+          <Box
+            onClick={handelSaveBasicDetails}
+            width={{ xs: "60%", sm: "40%" }}
+            pt={1}
+          >
+            <CustomButton type="submit" wdth="100%">
+              Save Basic Details
+            </CustomButton>
+          </Box>
+        </Stack>
+      </form>
+      <form autoComplete="off" onSubmit={handelUpdatePassword}>
+        <Stack spacing={{ xs: 2, sm: 1 }} width={{ xs: 300, sm: 700 }}>
           <Typography
             variant="h4"
             sx={{
@@ -160,7 +234,7 @@ const AccountDetails = () => {
               aria-describedby="outlined-weight-helper-text"
               name="oldPassword"
               value={accountDetails.oldPassword}
-              onChange={handerInputChanges}
+              onChange={handelPasswordInputChange}
             />
           </FormControl>
           <FormControl id="fullWidth" variant="outlined">
@@ -177,7 +251,7 @@ const AccountDetails = () => {
               aria-describedby="outlined-weight-helper-text"
               name="newPassword"
               value={accountDetails.newPassword}
-              onChange={handerInputChanges}
+              onChange={handelPasswordInputChange}
             />
           </FormControl>
           <FormControl id="fullWidth" variant="outlined">
@@ -192,15 +266,19 @@ const AccountDetails = () => {
               id="outlined-adornment-weight"
               placeholder="Repeat new password"
               aria-describedby="outlined-weight-helper-text"
-              name="repeatNewPassword"
-              value={accountDetails.repeatNewPassword}
-              onChange={handerInputChanges}
+              name="confirmPassword"
+              value={accountDetails.confirmPassword}
+              onChange={handelPasswordInputChange}
             />
           </FormControl>
 
-          <Box width={{ xs: "60%", sm: "40%" }} pt={1}>
+          <Box
+            onClick={handelUpdatePassword}
+            width={{ xs: "60%", sm: "40%" }}
+            pt={1}
+          >
             <CustomButton type="submit" wdth="100%">
-              Save Changes
+              Save Password
             </CustomButton>
           </Box>
 
@@ -208,7 +286,7 @@ const AccountDetails = () => {
         </Stack>
       </form>
     </Container>
-  )
-}
+  );
+};
 
-export default AccountDetails
+export default AccountDetails;
