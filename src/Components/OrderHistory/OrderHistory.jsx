@@ -18,7 +18,7 @@ const styles = {
     color: "#6C7275",
   },
 };
-const OrderHistory = () => {
+const OrderHistory = ({ setAccountId }) => {
   const matches = useMediaQuery("(min-width:900px)");
   const [AllselfOrder, setAllselfOrder] = useState([]);
   const [orderLoad, setorderLoad] = useState(false);
@@ -102,6 +102,7 @@ const OrderHistory = () => {
                     key={idx}
                     style={{ padding: "1rem" }}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    onClick={() => setAccountId(row?.orderID)}
                   >
                     <TableCell component="th" scope="row">
                       {row?.orderID}

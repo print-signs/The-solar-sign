@@ -23,6 +23,7 @@ import AccountAddress from "../../Components/AccountAddress/AccountAddress.jsx";
 import axios from "axios";
 import { isAutheticated } from "../../Auth";
 import toast from "react-hot-toast";
+import OrderDetails from "../../Components/OrderDetails/OrderDetails.jsx";
 
 const activeStyle = {
   color: "black",
@@ -45,6 +46,10 @@ const Account = () => {
   const [userAllAddress, setUserAllAddress] = useState([]);
   const [successs, setSuccess] = useState(true);
   const [load, setLoading] = useState(false);
+  const [id, setId] = useState("");
+  const setAccountId = (newId) => {
+    setId(newId);
+  };
 
   const token = isAutheticated();
   //get user Address if exist
@@ -58,7 +63,7 @@ const Account = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setUserAllAddress(res.data?.UserShippingAddress || []);
         // toast.success(res.data.message ? res.data.message : "Address fetch!");
 
@@ -258,17 +263,24 @@ const Account = () => {
               </Box>
             )}
             {activeTab === "Orders" && (
-              <Box>
-                <OrderHistory />
-              </Box>
+              !id ?
+                <>
+                  <Box>
+                    <OrderHistory setAccountId={setAccountId} />
+                  </Box>
+                </>
+                :
+                <>
+                  <OrderDetails />
+                </>
             )}
             {activeTab === "Wishlist" && (
               <Box>wishlist section goes her create an component for this </Box>
             )}
           </Grid>
         </Grid>
-      </Box>
-    </Container>
+      </Box >
+    </Container >
   );
 };
 

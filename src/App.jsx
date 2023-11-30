@@ -20,6 +20,7 @@ import Products from "./Components/Product/Products";
 import ContactUs from "./Pages/ContactUs";
 import ForgotPassword from './Pages/ForgotPassword';
 import PrivateRoute from "./Components/core/Auth/PrivateRoute";
+import OrderDetails from "./Components/OrderDetails";
 
 const router = createBrowserRouter(
 
@@ -36,7 +37,9 @@ const router = createBrowserRouter(
         <Route path="cart" element={<Cart />} />
         <Route path="shop" element={<Shop />} />
 
-        <Route path="signin" element={<SignIn />} />
+        <Route path='order-details' element={< OrderDetails />} />
+
+        < Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
