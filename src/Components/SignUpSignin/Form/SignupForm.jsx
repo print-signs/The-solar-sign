@@ -55,7 +55,7 @@ const SignupForm = () => {
       if (response.status === 201) {
         localStorage.setItem("jwtToken", response?.data?.token);
         // console.log(response);
-        navigate("/");
+        navigate("/signin");
         toast.success("Registration Successfull");
       }
     } catch (error) {

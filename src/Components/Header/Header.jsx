@@ -17,6 +17,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { signout } from "../../Auth";
 
 const pages = [
   { name: "Home", path: "/" },
@@ -26,6 +27,8 @@ const pages = [
 ];
 
 const Header = () => {
+  const token = localStorage.getItem('jwtToken') ? (localStorage.getItem('jwtToken')) : null;
+
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -87,31 +90,49 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
-        onClick={() => {
-          navigate("/account");
-          handleMenuClose();
-        }}
-      >
-        Account
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          navigate("/signup");
-          handleMenuClose();
-        }}
-      >
-        Sign Up
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          navigate("/signin");
-          handleMenuClose();
-        }}
-      >
-        Sign In
-      </MenuItem>
+
+      {
+        token ?
+          <>
+            <MenuItem
+              onClick={() => {
+                signout()
+                handleMenuClose();
+              }}
+            >
+              Sign Out
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/account");
+                handleMenuClose();
+              }}
+            >
+              Account
+            </MenuItem>
+          </>
+
+          :
+          <>
+            <MenuItem
+              onClick={() => {
+                navigate("/signup");
+                handleMenuClose();
+              }}
+            >
+              Sign Up
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                navigate("/signin");
+                handleMenuClose();
+              }}
+            >
+              Sign In
+            </MenuItem></>
+      }
     </Menu>
+
   );
 
   const renderMobileNavLink = (
@@ -165,14 +186,20 @@ const Header = () => {
         vertical: "top",
         horizontal: "right",
       }}
-      open={isMobileMenuOpen}
+      open={isMobileMenuOpen} token
       onClose={handleMobileMenuClose}
     >
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton size="large">
           <AccountCircle />
         </IconButton>
-        <Typography>Sign Up/Sign In</Typography>
+        {
+          token ?
+            <Typography>Account / Sign Out</Typography>
+            :
+            <Typography>Sign Up/ Sign In</Typography>
+
+        }
       </MenuItem>
       <MenuItem>
         <IconButton size="large">

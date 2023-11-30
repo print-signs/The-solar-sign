@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { setCartItem } from "../../store/Actions/cartActions";
-
+import toast from "react-hot-toast";
 const styles = {
   container: {
     position: "relative",
@@ -72,7 +72,7 @@ const ShopPageProduct = ({ src, alt, name, price, id, product }) => {
 
   const addToCartHandler = async () => {
     dispatch(setCartItem(product, 1));
-    alert('Added to cart');
+    toast.success('Added to cart');
 
   }
 

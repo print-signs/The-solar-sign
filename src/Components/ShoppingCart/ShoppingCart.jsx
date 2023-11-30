@@ -28,7 +28,7 @@ import {
   decreaseQuantity,
   setTaxPrice
 } from "../../store/Actions/cartActions";
-
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 const styles = {
   headingStyle: {
@@ -96,7 +96,7 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
   const removeCartItemHandler = (id) => {
     dispatch(removeItemFromCart(id));
     dispatch(getSubTotalPrice());
-    alert("removed")
+    toast.success("removed")
   }
 
 

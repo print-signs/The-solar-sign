@@ -18,9 +18,11 @@ import Cart from "./Pages/Cart";
 import Shop from "./Pages/Shop";
 import Products from "./Components/Product/Products";
 import ContactUs from "./Pages/ContactUs";
-import ForgotPassword from './Pages/ForgotPassword'
+import ForgotPassword from './Pages/ForgotPassword';
+import PrivateRoute from "./Components/core/Auth/PrivateRoute";
 
 const router = createBrowserRouter(
+
   createRoutesFromElements(
     <React.Fragment>
       <Route path="/" element={<Root />}>
@@ -30,7 +32,7 @@ const router = createBrowserRouter(
         <Route path="/contact" element={<ContactUs />} />
 
         {/* <Route path="product-details" element={<ProductDetails />} /> */}
-        <Route path="account" element={<Account />} />
+        <Route path="account" element={<PrivateRoute> <Account /></PrivateRoute>} />
         <Route path="cart" element={<Cart />} />
         <Route path="shop" element={<Shop />} />
 

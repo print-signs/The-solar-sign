@@ -16,6 +16,7 @@ import { getSingleProductDetails } from "../../store/Actions/productsActions";
 import { useParams } from "react-router-dom";
 import { setCartItem } from "../../store/Actions/cartActions";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const styles = {
   img: {
     width: "100%",
@@ -107,7 +108,7 @@ const ProductDetails = () => {
   const addToCartHandler = () => {
     dispatch(setCartItem(productsDetailsData, count));
 
-    alert("added to cart");
+    toast.success("added to cart");
     navigate("/cart");
   };
 
