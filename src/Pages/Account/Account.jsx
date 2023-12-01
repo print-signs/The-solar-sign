@@ -46,10 +46,10 @@ const Account = () => {
   const [userAllAddress, setUserAllAddress] = useState([]);
   const [successs, setSuccess] = useState(true);
   const [load, setLoading] = useState(false);
-  const [id, setId] = useState("");
-  const setAccountId = (newId) => {
-    setId(newId);
-  };
+  const [accountId, setAccountId] = useState("");
+  // const setAccountId = (newId) => {
+  //   setId(newId);
+  // };
 
   const token = isAutheticated();
   //get user Address if exist
@@ -262,25 +262,28 @@ const Account = () => {
                 </Grid>
               </Box>
             )}
-            {activeTab === "Orders" && (
-              !id ?
+            {activeTab === "Orders" &&
+              (!accountId ? (
                 <>
                   <Box>
                     <OrderHistory setAccountId={setAccountId} />
                   </Box>
                 </>
-                :
+              ) : (
                 <>
-                  <OrderDetails />
+                  <OrderDetails
+                    accountId={accountId}
+                    setAccountId={setAccountId}
+                  />
                 </>
-            )}
+              ))}
             {activeTab === "Wishlist" && (
               <Box>wishlist section goes her create an component for this </Box>
             )}
           </Grid>
         </Grid>
-      </Box >
-    </Container >
+      </Box>
+    </Container>
   );
 };
 

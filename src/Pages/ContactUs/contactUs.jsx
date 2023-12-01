@@ -17,8 +17,9 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import mapImage from "../../assets/images/mapImage.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 const styles = {
   img: {
     width: "100%",
@@ -38,6 +39,7 @@ const ContactUs = () => {
   const [message, setMessage] = useState("");
   const [feedback, setFeedBack] = useState("");
   const [sending, setSending] = useState(false);
+  const [address, setAddress] = useState();
   const matches = useMediaQuery("(min-width:900px)");
 
   const handleFeedback = (message) => {
@@ -58,27 +60,35 @@ const ContactUs = () => {
 
     formData.set("message", message);
 
-    const res = await axios.post(
-      "https://printsigns.onrender.com" + "/api/contact/request/new/",
-      formData,
-      {
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/formdata",
-          "Access-Control-Allow-Origin": "*",
-        },
-      }
-    );
+    const res = await axios.post("/api/contact/request/new/", formData, {
+      headers: {
+        // Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/formdata",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
     if (res.status === 201) {
+      toast.success("Message sent successfully");
       setSending(false);
       setName("");
       setEmail(""), setMessage("");
       handleFeedback("Message sent successfully");
     } else {
       setSending(false);
+      toast.error("Somthing wert wrong");
       handleFeedback("something went worng");
     }
   };
+
+  const getAddress = async () => {
+    // console.log(import.meta.env.VITE_BASE_URL);
+    const logoData = await axios.get("/api/config");
+    setAddress(logoData?.data?.result[0]?.address[0]);
+  };
+
+  useEffect(() => {
+    getAddress();
+  }, []);
   return (
     <div>
       <Container>
@@ -103,7 +113,7 @@ const ContactUs = () => {
             </Link>{" "}
           </Typography>
         </Box>
-        <Box maxWidth={834}>
+        {/* <Box maxWidth={834}>
           <Typography
             variant="h3"
             sx={{
@@ -116,8 +126,7 @@ const ContactUs = () => {
               my: "1rem",
             }}
           >
-            We believe in sustainable decor. We’re passionate about life at
-            home.
+            contact us .
           </Typography>
           <Typography
             variant="body2"
@@ -136,8 +145,8 @@ const ContactUs = () => {
             for generations, faithful to the shapes of each period, with a touch
             of the present
           </Typography>
-        </Box>
-        <Grid container sx={{ background: "#F3F5F7", my: "2rem" }}>
+        </Box> */}
+        {/* <Grid container sx={{ background: "#F3F5F7", my: "2rem" }}>
           <Grid item xs={12} sm={12} md={6} xl={6}>
             <img width={"100%"} height={431} src={contactImage} alt="contact" />
           </Grid>
@@ -201,19 +210,20 @@ const ContactUs = () => {
               </Button>
             </Box>
           </Grid>
-        </Grid>
+        </Grid> */}
         <Box my={5}>
           <Typography
             variant="h4"
             mb={5}
             sx={{
               fontFamily: "Poppins",
-              textAlign: "center",
-              fontSize: 40,
+              fontSize: matches ? 54 : 30,
               fontStyle: "normal",
               fontWeight: 500,
-              lineHeight: "44px", // It's a string value in Material-UI sx prop
-              letterSpacing: "-0.4px",
+              textAlign: "center",
+              lineHeight: "58px", // It's a string value in Material-UI sx prop
+              letterSpacing: "-1px",
+              my: "1rem",
             }}
           >
             Contact Us
@@ -261,7 +271,8 @@ const ContactUs = () => {
                     color: "#141718",
                   }}
                 >
-                  234 Hai Trieu, Ho Chi Minh City, Viet Nam
+                  {/* {address?.city}, {address?.state}, {address?.country} */}
+                  035 Bengaluru karnataka ,india
                 </Typography>
               </Paper>
             </Grid>
@@ -307,7 +318,8 @@ const ContactUs = () => {
                     color: "#141718",
                   }}
                 >
-                  +84 234 567 890
+                  {/* {address?.contact} */}
+                  8516913819
                 </Typography>
               </Paper>{" "}
             </Grid>
@@ -353,7 +365,8 @@ const ContactUs = () => {
                     // mx: "1rem",
                   }}
                 >
-                  roshangarg28@gmail.com
+                  {/* {address?.email} */}
+                  roshan@gmail.com
                 </Typography>
               </Paper>{" "}
             </Grid>
@@ -417,7 +430,7 @@ const ContactUs = () => {
                 disabled={sending}
                 sx={{
                   backgroundColor: "#141718",
-                  color: "#fff",
+                  color: "white",
                   padding: "0.5rem 2rem",
                   border: "none",
                   borderRadius: "8px",
@@ -426,9 +439,13 @@ const ContactUs = () => {
                   "&:hover": {
                     backgroundColor: "#141718", // Set the same color on hover to maintain consistency
                   },
+                  "&:disabled": {
+                    // Adding specific styling for the disabled state
+                    color: "rgba(255, 255, 255, 0.7)", // Adjust the opacity or use a different color for disabled text
+                  },
                 }}
               >
-                Send Message
+                {sending ? "Sending..." : "Send message"}
               </Button>
             </form>
           </Box>

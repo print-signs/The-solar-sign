@@ -27,7 +27,9 @@ const pages = [
 ];
 
 const Header = () => {
-  const token = localStorage.getItem('jwtToken') ? (localStorage.getItem('jwtToken')) : null;
+  const token = localStorage.getItem("jwtToken")
+    ? localStorage.getItem("jwtToken")
+    : null;
 
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -65,9 +67,7 @@ const Header = () => {
 
   const getLogo = async () => {
     // console.log(import.meta.env.VITE_BASE_URL);
-    const logoData = await axios.get(
-      "https://printsigns.onrender.com" + "/api/config"
-    );
+    const logoData = await axios.get("/api/config");
     setLogo(logoData?.data?.result[0]?.logo[0]);
   };
 
@@ -90,49 +90,46 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-
-      {
-        token ?
-          <>
-            <MenuItem
-              onClick={() => {
-                signout()
-                handleMenuClose();
-              }}
-            >
-              Sign Out
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                navigate("/account");
-                handleMenuClose();
-              }}
-            >
-              Account
-            </MenuItem>
-          </>
-
-          :
-          <>
-            <MenuItem
-              onClick={() => {
-                navigate("/signup");
-                handleMenuClose();
-              }}
-            >
-              Sign Up
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                navigate("/signin");
-                handleMenuClose();
-              }}
-            >
-              Sign In
-            </MenuItem></>
-      }
+      {token ? (
+        <>
+          <MenuItem
+            onClick={() => {
+              signout();
+              handleMenuClose();
+            }}
+          >
+            Sign Out
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate("/account");
+              handleMenuClose();
+            }}
+          >
+            Account
+          </MenuItem>
+        </>
+      ) : (
+        <>
+          <MenuItem
+            onClick={() => {
+              navigate("/signup");
+              handleMenuClose();
+            }}
+          >
+            Sign Up
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate("/signin");
+              handleMenuClose();
+            }}
+          >
+            Sign In
+          </MenuItem>
+        </>
+      )}
     </Menu>
-
   );
 
   const renderMobileNavLink = (
@@ -186,20 +183,19 @@ const Header = () => {
         vertical: "top",
         horizontal: "right",
       }}
-      open={isMobileMenuOpen} token
+      open={isMobileMenuOpen}
+      token
       onClose={handleMobileMenuClose}
     >
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton size="large">
           <AccountCircle />
         </IconButton>
-        {
-          token ?
-            <Typography>Account / Sign Out</Typography>
-            :
-            <Typography>Sign Up/ Sign In</Typography>
-
-        }
+        {token ? (
+          <Typography>Account / Sign Out</Typography>
+        ) : (
+          <Typography>Sign Up/ Sign In</Typography>
+        )}
       </MenuItem>
       <MenuItem>
         <IconButton size="large">
@@ -207,7 +203,14 @@ const Header = () => {
             <LocalMallIcon />
           </Badge>
         </IconButton>
-        <Typography onClick={() => { navigate('/cart'); handleMobileMenuClose() }}>Cart</Typography>
+        <Typography
+          onClick={() => {
+            navigate("/cart");
+            handleMobileMenuClose();
+          }}
+        >
+          Cart
+        </Typography>
       </MenuItem>
     </Menu>
   );

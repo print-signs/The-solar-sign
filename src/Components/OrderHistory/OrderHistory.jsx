@@ -100,7 +100,7 @@ const OrderHistory = ({ setAccountId }) => {
                 AllselfOrder.map((row, idx) => (
                   <TableRow
                     key={idx}
-                    style={{ padding: "1rem" }}
+                    style={{ padding: "1rem", cursor: "pointer" }}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     onClick={() => setAccountId(row?.orderID)}
                   >
@@ -139,7 +139,7 @@ const OrderHistory = ({ setAccountId }) => {
                     }}
                     p={2}
                   >
-                    No Order PLaced till Now !
+                    No Order Placed till Now !
                   </Typography>
                 </>
               )}
