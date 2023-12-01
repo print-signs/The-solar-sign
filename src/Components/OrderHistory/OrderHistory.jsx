@@ -149,7 +149,13 @@ const OrderHistory = ({ setAccountId }) => {
       )}
       {!matches &&
         AllselfOrder.map((item, i) => (
-          <Grid key={i} container spacing={2}>
+          <Grid
+            onClick={() => setAccountId(item?.orderID)}
+            key={i}
+            container
+            spacing={2}
+            sx={{ cursor: "pointer" }}
+          >
             <Grid item xs={6} sm={6} md={6} lg={6}>
               <Typography
                 py={1}
