@@ -5,6 +5,7 @@ import {
   Grid,
   InputLabel,
   Paper,
+  Skeleton,
   TextField,
   Typography,
   useMediaQuery,
@@ -229,147 +230,179 @@ const ContactUs = () => {
             Contact Us
           </Typography>
           <Grid container spacing={4}>
-            <Grid item sm={12} xs={12} md={4} xl={4}>
-              <Paper
-                elevation={0}
-                sx={{
-                  background: "#F3F5F7",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  //   justifyContent: "center",
-                  textAlign: "center",
-                  padding: "1rem",
-                  height: "120px",
-                }}
-              >
-                <HomeOutlinedIcon />
-                <Typography
-                  sx={{
-                    color: "#6C7275",
-                    fontFamily: "Inter",
-                    textAlign: "center",
-                    m: "0.5rem",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 700,
-                    lineHeight: "16px", // It's a string value in Material-UI sx prop
-                    textTransform: "uppercase",
-                  }}
-                >
-                  ADDRESS
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: "Inter",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 600,
-                    lineHeight: "26px",
-                    // mx: "1rem",
-                    color: "#141718",
-                  }}
-                >
-                  {/* {address?.city}, {address?.state}, {address?.country} */}
-                  035 Bengaluru karnataka ,india
-                </Typography>
-              </Paper>
-            </Grid>
-            <Grid item sm={12} xs={12} md={4} xl={4}>
-              <Paper
-                elevation={0}
-                sx={{
-                  background: "#F3F5F7",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  //   justifyContent: "center",
-                  textAlign: "center",
-                  padding: "1rem",
-                  height: "120px",
-                }}
-              >
-                <CallOutlinedIcon />
-                <Typography
-                  sx={{
-                    color: "#6C7275",
-                    fontFamily: "Inter",
-                    textAlign: "center",
-                    m: "0.5rem",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 700,
-                    lineHeight: "16px", // It's a string value in Material-UI sx prop
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Contact Us
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: "Inter",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 600,
-                    lineHeight: "26px",
-                    // mx: "1rem",
-                    color: "#141718",
-                  }}
-                >
-                  {/* {address?.contact} */}
-                  8516913819
-                </Typography>
-              </Paper>{" "}
-            </Grid>
-            <Grid item sm={12} xs={12} md={4} xl={4}>
-              <Paper
-                elevation={0}
-                sx={{
-                  background: "#F3F5F7",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  //   justifyContent: "center",
-                  textAlign: "center",
-                  padding: "1rem",
-                  height: "120px",
-                }}
-              >
-                <EmailOutlinedIcon />
-                <Typography
-                  sx={{
-                    color: "#6C7275",
-                    fontFamily: "Inter",
-                    textAlign: "center",
-                    m: "0.5rem",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 700,
-                    lineHeight: "16px", // It's a string value in Material-UI sx prop
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Email
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: "Inter",
-                    fontSize: 16,
-                    fontStyle: "normal",
-                    fontWeight: 600,
-                    lineHeight: "26px",
-                    color: "#141718",
-                    // mx: "1rem",
-                  }}
-                >
-                  {/* {address?.email} */}
-                  roshan@gmail.com
-                </Typography>
-              </Paper>{" "}
-            </Grid>
+            {!address && (
+              <>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"150px"}
+                  />
+                </Grid>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"150px"}
+                  />
+                </Grid>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={"100%"}
+                    height={"150px"}
+                  />
+                </Grid>
+              </>
+            )}
+            {address && (
+              <>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      background: "#F3F5F7",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      //   justifyContent: "center",
+                      textAlign: "center",
+                      padding: "1rem",
+                      height: "120px",
+                    }}
+                  >
+                    <HomeOutlinedIcon />
+                    <Typography
+                      sx={{
+                        color: "#6C7275",
+                        fontFamily: "Inter",
+                        textAlign: "center",
+                        m: "0.5rem",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 700,
+                        lineHeight: "16px", // It's a string value in Material-UI sx prop
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      ADDRESS
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Inter",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 600,
+                        lineHeight: "26px",
+                        // mx: "1rem",
+                        color: "#141718",
+                      }}
+                    >
+                      {address?.city}, {address?.state}, {address?.country}
+                      {/* 035 Bengaluru karnataka ,india */}
+                    </Typography>
+                  </Paper>
+                </Grid>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      background: "#F3F5F7",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      //   justifyContent: "center",
+                      textAlign: "center",
+                      padding: "1rem",
+                      height: "120px",
+                    }}
+                  >
+                    <CallOutlinedIcon />
+                    <Typography
+                      sx={{
+                        color: "#6C7275",
+                        fontFamily: "Inter",
+                        textAlign: "center",
+                        m: "0.5rem",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 700,
+                        lineHeight: "16px", // It's a string value in Material-UI sx prop
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Contact Us
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Inter",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 600,
+                        lineHeight: "26px",
+                        // mx: "1rem",
+                        color: "#141718",
+                      }}
+                    >
+                      {address?.contact}
+                      {/* 8516913819 */}
+                    </Typography>
+                  </Paper>{" "}
+                </Grid>
+                <Grid item sm={12} xs={12} md={4} xl={4}>
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      background: "#F3F5F7",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      //   justifyContent: "center",
+                      textAlign: "center",
+                      padding: "1rem",
+                      height: "120px",
+                    }}
+                  >
+                    <EmailOutlinedIcon />
+                    <Typography
+                      sx={{
+                        color: "#6C7275",
+                        fontFamily: "Inter",
+                        textAlign: "center",
+                        m: "0.5rem",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 700,
+                        lineHeight: "16px", // It's a string value in Material-UI sx prop
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Email
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "Inter",
+                        fontSize: 16,
+                        fontStyle: "normal",
+                        fontWeight: 600,
+                        lineHeight: "26px",
+                        color: "#141718",
+                        // mx: "1rem",
+                      }}
+                    >
+                      {address?.email}
+                      {/* roshan@gmail.com */}
+                    </Typography>
+                  </Paper>{" "}
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
         <Box

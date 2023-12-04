@@ -34,12 +34,10 @@ const OrderHistory = ({ setAccountId }) => {
         },
       });
       if (response.data) {
-        // console.log(response.data);
         setAllselfOrder(response.data?.order);
         setorderLoad(false);
       }
     } catch (error) {
-      console.error("Error get data:", error.message);
       setorderLoad(false);
     }
   };
