@@ -13,7 +13,7 @@ const PrivateRoute = ({ children }) => {
         return <Navigate to="/signin" />
     }
 }
-PrivateRoute.PropTypes = {
+PrivateRoute.propTypes = {
     children: PropTypes.element.isRequired
 };
 

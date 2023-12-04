@@ -21,9 +21,10 @@ import OrderHistory from "../../Components/OrderHistory/OrderHistory";
 import { useEffect, useState } from "react";
 import AccountAddress from "../../Components/AccountAddress/AccountAddress.jsx";
 import axios from "axios";
-import { isAutheticated } from "../../Auth";
+import { isAutheticated, signout } from "../../Auth";
 import toast from "react-hot-toast";
 import OrderDetails from "../../Components/OrderDetails/OrderDetails.jsx";
+import { useNavigate } from 'react-router-dom'
 
 const activeStyle = {
   color: "black",
@@ -45,6 +46,7 @@ const Account = () => {
   };
   const [userAllAddress, setUserAllAddress] = useState([]);
   const [successs, setSuccess] = useState(true);
+  const navigate = useNavigate();
   const [load, setLoading] = useState(false);
   const [accountId, setAccountId] = useState("");
   // const setAccountId = (newId) => {
@@ -159,7 +161,10 @@ const Account = () => {
                       {/* <MenuItem value={"Wishlist"}>Wishlist</MenuItem> */}
                       <MenuItem
                         value="Logout"
-                        onClick={() => console.log("logout")}
+                        onClick={() => {
+                          signout();
+                          navigate('/signin')
+                        }}
                       >
                         Logout
                       </MenuItem>
@@ -207,7 +212,10 @@ const Account = () => {
                     <ListItem disablePadding>
                       <ListItemButton
                         style={{ padding: "0.5rem 0rem" }}
-                        onClick={() => console.log("Logout")}
+                        onClick={() => {
+                          signout();
+                          navigate('/signin')
+                        }}
                       >
                         <ListItemText
                           style={{ color: "#6C7275" }}

@@ -167,7 +167,7 @@ export default function Footer() {
                   Privacy Policy{" "}
                 </Link>
                 <Link
-                  to={"/privacy-policy"}
+                  to={"/term-of-use"}
                   style={{
                     textDecoration: "none",
                     color: "white",
@@ -175,9 +175,24 @@ export default function Footer() {
                     fontSize: "0.9rem",
                     fontFamily: "Inter",
                     fontWeight: "bold",
+                    marginRight: "1rem",
                   }}
                 >
                   Terms of Use{" "}
+                </Link>
+                <Link
+                  to={"/shipping-policy"}
+                  style={{
+                    textDecoration: "none",
+                    color: "white",
+                    cursor: "pointer",
+                    fontSize: "0.9rem",
+                    fontFamily: "Inter",
+                    fontWeight: "bold",
+                    marginRight: "1rem",
+                  }}
+                >
+                  Shipping Policy{" "}
                 </Link>
               </Box>
             </Box>

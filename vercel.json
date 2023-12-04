@@ -35,6 +35,18 @@
     {
       "src": "/forgot-password",
       "dest": "/"
+    },
+    {
+      "src": "/privacy-policy",
+      "dest": "/"
+    },
+    {
+      "src": "/term-of-use",
+      "dest": "/"
+    },
+    {
+      "src": "/shipping-policy",
+      "dest": "/"
     }
   ]
 }

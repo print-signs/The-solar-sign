@@ -36,7 +36,7 @@ const AccountDetails = () => {
     confirmPassword: "",
   });
 
-  console.log(token);
+  // console.log(token);
   const getUserBasicDetails = async () => {
     try {
       const res = await axios.get("/api/v1/user/details", {
@@ -46,7 +46,7 @@ const AccountDetails = () => {
         },
       });
       if (res.status === 200) {
-        console.log(res);
+        // console.log(res);
         setAccountDetails({
           ...accountDetails,
           name: res?.data?.user?.name, // Assuming 'name' is one of the fields you receive
@@ -99,7 +99,7 @@ const AccountDetails = () => {
     }
   };
 
-  console.log(passworDetails);
+  // console.log(passworDetails);
   const handelUpdatePassword = async () => {
     if (
       !passworDetails.oldPassword ||
