@@ -13,15 +13,15 @@ import { useEffect, useState } from "react";
 import { isAutheticated } from "../../Auth";
 import axios from "axios";
 import moment from "moment";
-const styles = {
-  formStyle: {
-    fontWeight: "700",
-    fontSize: "12px",
-    fontFamily: "inter",
-    marginBottom: "3px",
-    marginLeft: "0",
-  },
-};
+// const styles = {
+//   formStyle: {
+//     fontWeight: "700",
+//     fontSize: "12px",
+//     fontFamily: "inter",
+//     marginBottom: "3px",
+//     marginLeft: "0",
+//   },
+// };
 
 const boxStyles = {
   p: 3,
@@ -37,7 +37,7 @@ const headingStyles = {
   mb: 3,
 };
 
-const innerText = { fontFamily: "inter", fontWeight: "600", fontSize: "16px" };
+// const innerText = { fontFamily: "inter", fontWeight: "600", fontSize: "16px" };
 const OrderDetails = ({ setAccountId, accountId }) => {
   const [OrderDetails, setOrderDetails] = useState();
   const [orderLoad, setorderLoad] = useState(false);

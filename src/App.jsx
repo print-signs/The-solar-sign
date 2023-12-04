@@ -21,6 +21,9 @@ import ContactUs from "./Pages/ContactUs";
 import ForgotPassword from './Pages/ForgotPassword';
 import PrivateRoute from "./Components/core/Auth/PrivateRoute";
 import OrderDetails from "./Components/OrderDetails";
+import PrivacePolicy from "./Components/PrivacyPolicy";
+import TermAndCondition from "./Components/TermAndCondition";
+import ShippingPolicy from "./Components/ShippingPolicy";
 
 const router = createBrowserRouter(
 
@@ -42,6 +45,11 @@ const router = createBrowserRouter(
         < Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+
+        <Route path="/privacy-policy" element={<PrivacePolicy />} />
+        <Route path="/term-of-use" element={<TermAndCondition />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
       </Route>
     </React.Fragment>
   )

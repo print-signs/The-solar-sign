@@ -96,6 +96,7 @@ const Header = () => {
             onClick={() => {
               signout();
               handleMenuClose();
+              navigate('/signin')
             }}
           >
             Sign Out
