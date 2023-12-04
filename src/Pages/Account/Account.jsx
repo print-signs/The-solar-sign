@@ -212,7 +212,10 @@ const Account = () => {
                     <ListItem disablePadding>
                       <ListItemButton
                         style={{ padding: "0.5rem 0rem" }}
-                        onClick={() => console.log("Logout")}
+                        onClick={() => {
+                          signout();
+                          navigate('/signin')
+                        }}
                       >
                         <ListItemText
                           style={{ color: "#6C7275" }}
