@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import ServicesCardData from "../../Data/ServicesCardData";
+import "leaflet/dist/leaflet.css";
 import contactImage from "../../assets/images/contactUsImage.png";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -21,6 +22,7 @@ import mapImage from "../../assets/images/mapImage.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 const styles = {
   img: {
     width: "100%",
@@ -88,8 +90,11 @@ const ContactUs = () => {
   };
 
   useEffect(() => {
-    getAddress();
-  }, []);
+    getAddress(); // Fetch initial address
+
+    // Once address is fetched, trigger fetching reverse geocoded address
+  }, [address]);
+
   return (
     <div>
       <Container>
@@ -483,7 +488,32 @@ const ContactUs = () => {
             </form>
           </Box>
           <Box mb={2}>
-            <img src={mapImage} width={"100%"} alt="map" />
+            {/* <img src={mapImage} width={"100%"} alt="map" /> */}
+            {address ? (
+              <Box width="350px" height="350px">
+                <MapContainer
+                  center={[address?.latitude, address?.longitude]}
+                  zoom={10}
+                  scrollWheelZoom={false}
+                  style={{ width: "100%", height: "100%" }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={[address?.latitude, address?.longitude]}>
+                    <Popup>{address?.address}</Popup>
+                  </Marker>
+                </MapContainer>
+              </Box>
+            ) : (
+              <Skeleton
+                animation="wave"
+                variant="rectangular"
+                width={"350px"}
+                height={"350px"}
+              />
+            )}
           </Box>
         </Box>
         {feedback && (
