@@ -6,6 +6,8 @@ import twitter from "../../assets/svg/twitter.svg";
 import linkedin from "../../assets/svg/linkedinIcon.svg";
 import instagram from "../../assets/svg/instagram.svg";
 import youtube from "../../assets/svg/youtube.svg";
+import React, { useState } from "react";
+import axios from "axios";
 
 const mediaIcon = [
   {
@@ -42,6 +44,45 @@ const footerLinks = [
 ];
 export default function Footer() {
   const match = useMediaQuery("(max-width:840px)");
+  const [footerLogo, steFooterLogo] = useState("");
+  const getLogo = async () => {
+    // console.log(import.meta.env.VITE_BASE_URL);
+    const logoData = await axios.get("/api/config");
+    console.log(logoData);
+    steFooterLogo(logoData?.data?.result[0]?.logo[0]);
+  };
+
+  React.useEffect(() => {
+    getLogo();
+  }, []);
+
+  const renderLogo = () => {
+    if (footerLogo) {
+      return (
+        <img
+          src={footerLogo.Footerlogo}
+          alt="Logo"
+          style={{ height: "40px", width: "auto", marginRight: "10px" }}
+        />
+      );
+    } else {
+      return (
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            color: "#141718",
+            fontFamily: "Poppins",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
+        >
+          3legant.
+        </Typography>
+      );
+    }
+  };
   return (
     <div>
       <Box
@@ -70,7 +111,7 @@ export default function Footer() {
               }}
               flex={1}
             >
-              <Typography
+              {/* <Typography
                 variant="h5"
                 noWrap
                 component="div"
@@ -82,7 +123,17 @@ export default function Footer() {
                 }}
               >
                 3legant<span style={{ color: "grey" }}>.</span>
-              </Typography>
+              </Typography> */}
+              <Link
+                to="/"
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                {renderLogo()}
+              </Link>
               {!match && (
                 <Typography
                   width={"2px"}
