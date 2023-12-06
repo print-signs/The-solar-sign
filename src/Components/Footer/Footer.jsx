@@ -9,31 +9,7 @@ import youtube from "../../assets/svg/youtube.svg";
 import React, { useState } from "react";
 import axios from "axios";
 
-const mediaIcon = [
-  {
-    icon: linkedin,
-    path: "#",
-  },
-  {
-    icon: twitter,
-    path: "#",
-  },
 
-  {
-    icon: instagram,
-    path: "#",
-  },
-
-  {
-    icon: facebook,
-    path: "#",
-  },
-
-  {
-    icon: youtube,
-    path: "#",
-  },
-];
 
 const footerLinks = [
   { name: "Home", path: "/" },
@@ -45,12 +21,48 @@ const footerLinks = [
 export default function Footer() {
   const match = useMediaQuery("(max-width:840px)");
   const [footerLogo, steFooterLogo] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [linkedInUrl, setLinkedInUrl] = useState("");
+  const [twitterUrl, setTwitterUrl] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const getLogo = async () => {
     // console.log(import.meta.env.VITE_BASE_URL);
     const logoData = await axios.get("/api/config");
-    console.log(logoData);
+    // console.log(logoData?.data?.result[0]?.socialMedia[0]?.linkedin);
     steFooterLogo(logoData?.data?.result[0]?.logo[0]);
+    setFacebookUrl(logoData?.data?.result[0]?.socialMedia[0]?.facebook)
+    setTwitterUrl(logoData?.data?.result[0]?.socialMedia[0]?.twitter)
+    setInstagramUrl(logoData?.data?.result[0]?.socialMedia[0]?.instagram)
+    setLinkedInUrl(logoData?.data?.result[0]?.socialMedia[0]?.linkedin)
+    setYoutubeUrl(logoData?.data?.result[0]?.socialMedia[0]?.youtube)
   };
+
+  const mediaIcon = [
+    {
+      icon: linkedin,
+      path: linkedInUrl,
+    },
+    {
+      icon: twitter,
+      path: twitterUrl,
+    },
+
+    {
+      icon: instagram,
+      path: instagramUrl,
+    },
+
+    {
+      icon: facebook,
+      path: facebookUrl,
+    },
+
+    {
+      icon: youtube,
+      path: youtubeUrl,
+    },
+  ];
 
   React.useEffect(() => {
     getLogo();
@@ -258,6 +270,7 @@ export default function Footer() {
                     margin: "0.5rem",
                   }}
                   to={link.path}
+                  target="_blank"
                   key={i}
                 >
                   <img src={link.icon} alt="media icons" />
