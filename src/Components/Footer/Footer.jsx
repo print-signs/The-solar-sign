@@ -9,18 +9,19 @@ import youtube from "../../assets/svg/youtube.svg";
 import React, { useState } from "react";
 import axios from "axios";
 
-
-
 const footerLinks = [
   { name: "Home", path: "/" },
   { name: "Shop", path: "/" },
-  { name: "Product", path: "/" },
-  { name: "Blog", path: "/" },
+  // { name: "Product", path: "/" },
+  // { name: "Blog", path: "/" },
   { name: "Contact Us", path: "/" },
 ];
 export default function Footer() {
   const match = useMediaQuery("(max-width:840px)");
   const [footerLogo, steFooterLogo] = useState("");
+  const [copyrightMessgae, setCopyrightMessgae] = useState("");
+  const [appname, setAppName] = useState("The Solar Sign");
+  const [address, setAddress] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [linkedInUrl, setLinkedInUrl] = useState("");
@@ -29,13 +30,17 @@ export default function Footer() {
   const getLogo = async () => {
     // console.log(import.meta.env.VITE_BASE_URL);
     const logoData = await axios.get("/api/config");
+    console.log(logoData);
+    setAppName(logoData?.data?.result[0]?.address[0]?.company);
+    setAddress(logoData?.data?.result[0]?.address[0]?.address);
+    setCopyrightMessgae(logoData?.data?.result[0]?.copyrightMessage);
     // console.log(logoData?.data?.result[0]?.socialMedia[0]?.linkedin);
     steFooterLogo(logoData?.data?.result[0]?.logo[0]);
-    setFacebookUrl(logoData?.data?.result[0]?.socialMedia[0]?.facebook)
-    setTwitterUrl(logoData?.data?.result[0]?.socialMedia[0]?.twitter)
-    setInstagramUrl(logoData?.data?.result[0]?.socialMedia[0]?.instagram)
-    setLinkedInUrl(logoData?.data?.result[0]?.socialMedia[0]?.linkedin)
-    setYoutubeUrl(logoData?.data?.result[0]?.socialMedia[0]?.youtube)
+    setFacebookUrl(logoData?.data?.result[0]?.socialMedia[0]?.facebook);
+    setTwitterUrl(logoData?.data?.result[0]?.socialMedia[0]?.twitter);
+    setInstagramUrl(logoData?.data?.result[0]?.socialMedia[0]?.instagram);
+    setLinkedInUrl(logoData?.data?.result[0]?.socialMedia[0]?.linkedin);
+    setYoutubeUrl(logoData?.data?.result[0]?.socialMedia[0]?.youtube);
   };
 
   const mediaIcon = [
@@ -149,20 +154,28 @@ export default function Footer() {
               {!match && (
                 <Typography
                   width={"2px"}
-                  height={"22px"}
+                  height={"80px"}
                   sx={{ background: "grey" }}
                 ></Typography>
               )}
+
               {match && (
                 <Typography
-                  width={"22px"}
+                  width={"80px"}
                   height={"2px"}
                   sx={{ background: "grey" }}
                 ></Typography>
               )}
-              <Typography style={{ color: "#E8ECEF", fontSize: "0.9rem" }}>
-                Headphone Store
-              </Typography>
+              <Box sx={{ textAlign: match ? "center" : "left" }}>
+                <Typography style={{ color: "#E8ECEF", fontSize: "0.9rem" }}>
+                  {appname}
+                </Typography>
+                <Box textAlign={"center"} mt={3}>
+                  <Typography style={{ color: "#E8ECEF", fontSize: "0.9rem" }}>
+                    {address}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
 
             <Box
@@ -192,6 +205,7 @@ export default function Footer() {
               ))}
             </Box>
           </Box>
+
           <hr style={{ color: "grey", marginTop: "3rem" }} />
           <Box
             sx={{
@@ -211,8 +225,14 @@ export default function Footer() {
               }}
               flex={1}
             >
-              <Typography style={{ color: "#E8ECEF", fontSize: "0.9rem" }}>
-                Copyright © 2023 3legant. All rights reserved
+              <Typography
+                style={{
+                  color: "#E8ECEF",
+                  fontSize: "0.9rem",
+                  maxWidth: "400px",
+                }}
+              >
+                {copyrightMessgae}
               </Typography>
               <Box>
                 <Link

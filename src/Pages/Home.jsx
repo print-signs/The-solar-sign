@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
+  Card,
+  CardMedia,
   CircularProgress,
   Container,
   Grid,
@@ -77,6 +79,67 @@ const Home = () => {
     count = 6;
     ProductCount = 4;
   }
+
+  // useEffect(() => {
+  //   // Load Taggbox widget
+  //   const script = document.createElement("script");
+  //   script.src = "https://widget.taggbox.com/embed-lite.min.js";
+  //   script.async = true;
+  //   script.setAttribute("data-widget-id", "146549");
+  //   script.setAttribute("data-tags", "false");
+  //   document.body.appendChild(script);
+
+  //   return () => {
+  //     // Clean up the script when the component unmounts
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src = "https://widget.taggbox.com/embed-lite.min.js";
+  //   script.type = "text/javascript";
+  //   script.async = true;
+  //   document.body.appendChild(script);
+  //   return () => {
+  //     //Clean up the script when the component is unmounted
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   const removeTaggboxPoweredBy = () => {
+  //     const poweredByTaggbox = document.querySelector(
+  //       ".taggbox .taggbox-footer"
+  //     );
+  //     if (poweredByTaggbox) {
+  //       poweredByTaggbox.style.display = "none";
+  //     }
+  //   };
+
+  //   removeTaggboxPoweredBy();
+  // }, []);
+  // useEffect(() => {
+  //   // Load Taggbox widget
+  //   const script = document.createElement("script");
+  //   script.src = "https://widget.taggbox.com/embed-lite.min.js";
+  //   script.async = true;
+  //   script.setAttribute("data-widget-id", "146549");
+  //   script.setAttribute("data-tags", "false");
+  //   console.log(script.dataset);
+
+  //   const widgetContainer = document.getElementById("taggbox-widget");
+  //   if (widgetContainer) {
+  //     widgetContainer.appendChild(script);
+  //   }
+
+  //   return () => {
+  //     // Clean up the script when the component unmounts
+  //     if (widgetContainer) {
+  //       widgetContainer.removeChild(script);
+  //     }
+  //   };
+  // }, []);
+
   return (
     <React.Fragment>
       {/* main hero section  */}
@@ -152,7 +215,7 @@ const Home = () => {
         </Container>
       </Box> */}
       {/* brands section  */}
-      <Container>
+      {/* <Container>
         <Swiper
           slidesPerView={count}
           spaceBetween={30}
@@ -175,7 +238,7 @@ const Home = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-      </Container>
+      </Container> */}
       <Container>
         <h3
           style={{
@@ -192,7 +255,7 @@ const Home = () => {
         >
           Categories
         </h3>
-        <Swiper
+        {/* <Swiper
           slidesPerView={ProductCount}
           spaceBetween={0}
           pagination={{
@@ -200,20 +263,36 @@ const Home = () => {
           }}
           modules={[Pagination]}
           className="mySwiper"
-        >
-          {loading && loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                marginBottom: "2rem",
-              }}
-            >
-              <CircularProgress color="inherit" />
-            </Box>
-          ) : categories.length > 0 ? (
-            categories.map((category) => (
-              <SwiperSlide key={category._id}>
+        > */}
+        {loading && loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "2rem",
+            }}
+          >
+            <CircularProgress color="inherit" />
+          </Box>
+        ) : categories.length > 0 ? (
+          <Grid
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            container
+            spacing={2}
+          >
+            {categories.slice(0, 8).map((category) => (
+              <Grid
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                item
+                xs={12}
+                sm={6}
+                md={3}
+                key={category._id}
+              >
                 <Product
                   src={category.categoryImage.secure_url}
                   alt={category.categoryName}
@@ -223,31 +302,32 @@ const Home = () => {
                     margin: "10px 10px",
                   }}
                 />
-              </SwiperSlide>
-            ))
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                marginBottom: "2rem",
-              }}
-            >
-              No Category Available !
-            </Box>
-          )}
-        </Swiper>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "2rem",
+            }}
+          >
+            No Category Available !
+          </Box>
+        )}
+        {/* </Swiper> */}
       </Container>
 
       {/* services card section */}
-      <Container style={{ marginTop: "9px" }}>
+      <Container style={{ marginTop: "9px", marginBottom: "2rem" }}>
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
           columns={{ xs: 12, sm: 12, md: 12 }}
         >
           {ServicesCardData.map((item, i) => (
-            <Grid item xs={6} sm={6} md={3} key={i}>
+            <Grid item xs={12} sm={6} md={3} key={i}>
               <Grid
                 container
                 alignItems="flex-start"
@@ -291,8 +371,8 @@ const Home = () => {
         </Grid>
       </Container>
       {/* instagram section  */}
-      <Container>
-        <Box margin="3rem 0rem">
+      {/* <Container> */}
+      {/* <Box margin="3rem 0rem">
           <Typography
             sx={{
               textAlign: "center",
@@ -361,8 +441,9 @@ const Home = () => {
               </Grid>
             ))}
           </Grid>
-        </Box>
-      </Container>
+        </Box> */}
+      {/* <div id="taggbox-widget" style={{ width: "100%", height: "300px" }}></div> */}
+      {/* </Container> */}
     </React.Fragment>
   );
 };

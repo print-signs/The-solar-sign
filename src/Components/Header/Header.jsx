@@ -22,7 +22,7 @@ import { signout } from "../../Auth";
 const pages = [
   { name: "Home", path: "/" },
   { name: "Shop", path: "/shop" },
-  { name: "Product", path: "/product" },
+  // { name: "Product", path: "/product" },
   { name: "Contact Us", path: "/contact" },
 ];
 
@@ -96,7 +96,7 @@ const Header = () => {
             onClick={() => {
               signout();
               handleMenuClose();
-              navigate('/signin')
+              navigate("/signin");
             }}
           >
             Sign Out
@@ -295,11 +295,11 @@ const Header = () => {
             </Typography>
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton size="large" sx={{ color: "#141718" }}>
+            {/* <IconButton size="large" sx={{ color: "#141718" }}>
               <Badge>
                 <SearchIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
             <IconButton
               size="large"
               onClick={handleProfileMenuOpen}
