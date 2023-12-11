@@ -234,48 +234,81 @@ export default function Footer() {
               >
                 {copyrightMessgae}
               </Typography>
-              <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  textAlign: "center",
+                }}
+              >
                 <Link
                   to={"/privacy-policy"}
                   style={{
                     textDecoration: "none",
-                    color: "white",
-                    cursor: "pointer",
-                    fontSize: "0.9rem",
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
-                    marginRight: "1rem",
                   }}
                 >
-                  Privacy Policy{" "}
+                  <Typography
+                    sx={{
+                      textAlign: match ? "center" : "",
+                      color: "white",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                      marginRight: "1rem",
+                      mb: "1rem",
+                    }}
+                  >
+                    {" "}
+                    Privacy Policy{" "}
+                  </Typography>
                 </Link>
                 <Link
                   to={"/term-of-use"}
                   style={{
                     textDecoration: "none",
-                    color: "white",
-                    cursor: "pointer",
-                    fontSize: "0.9rem",
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
-                    marginRight: "1rem",
                   }}
                 >
-                  Terms of Use{" "}
+                  <Typography
+                    sx={{
+                      textAlign: match ? "center" : "",
+                      color: "white",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                      marginRight: "1rem",
+                      mb: "1rem",
+                    }}
+                  >
+                    {" "}
+                    Terms of Use{" "}
+                  </Typography>
                 </Link>
                 <Link
                   to={"/shipping-policy"}
                   style={{
                     textDecoration: "none",
-                    color: "white",
-                    cursor: "pointer",
-                    fontSize: "0.9rem",
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
-                    marginRight: "1rem",
                   }}
                 >
-                  Shipping Policy{" "}
+                  <Typography
+                    sx={{
+                      textAlign: match ? "center" : "",
+                      color: "white",
+                      cursor: "pointer",
+                      fontSize: "0.9rem",
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                      marginRight: "1rem",
+                      mb: "1rem",
+                    }}
+                  >
+                    {" "}
+                    Shipping Policy{" "}
+                  </Typography>
                 </Link>
               </Box>
             </Box>
