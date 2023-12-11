@@ -11,10 +11,10 @@ import axios from "axios";
 
 const footerLinks = [
   { name: "Home", path: "/" },
-  { name: "Shop", path: "/" },
+  { name: "Shop", path: "/shop" },
   // { name: "Product", path: "/" },
   // { name: "Blog", path: "/" },
-  { name: "Contact Us", path: "/" },
+  { name: "Contact Us", path: "/contact" },
 ];
 export default function Footer() {
   const match = useMediaQuery("(max-width:840px)");

@@ -176,8 +176,8 @@ const OrderDetails = ({ setAccountId, accountId }) => {
                   }}
                 >
                   {" "}
-                  {OrderDetails?.shippingInfo.first_name}
-                  {OrderDetails?.shippingInfo.last_name}
+                  {OrderDetails?.shippingInfo?.first_name}
+                  {OrderDetails?.shippingInfo?.last_name}
                 </Typography>
                 <Typography
                   mt={2}
@@ -189,7 +189,7 @@ const OrderDetails = ({ setAccountId, accountId }) => {
                   }}
                 >
                   {" "}
-                  {OrderDetails?.shippingInfo.phone_Number}
+                  {OrderDetails?.shippingInfo?.phone_Number}
                 </Typography>
                 <Typography
                   mt={2}
@@ -201,9 +201,9 @@ const OrderDetails = ({ setAccountId, accountId }) => {
                   }}
                 >
                   {" "}
-                  {OrderDetails?.shippingInfo.street},{" "}
-                  {OrderDetails?.shippingInfo.country},{" "}
-                  {OrderDetails?.shippingInfo.state}
+                  {OrderDetails?.shippingInfo?.street},{" "}
+                  {OrderDetails?.shippingInfo?.country},{" "}
+                  {OrderDetails?.shippingInfo?.state}
                 </Typography>
               </Box>
               <Box
