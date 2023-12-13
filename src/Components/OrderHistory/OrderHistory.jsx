@@ -44,6 +44,7 @@ const OrderHistory = ({ setAccountId }) => {
   useEffect(() => {
     getAllselfOrder();
   }, []);
+  // console.log(AllselfOrder);
   return (
     <div>
       <Typography
@@ -100,7 +101,7 @@ const OrderHistory = ({ setAccountId }) => {
                     key={idx}
                     style={{ padding: "1rem", cursor: "pointer" }}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    onClick={() => setAccountId(row?.orderID)}
+                    onClick={() => setAccountId(row?._id)}
                   >
                     <TableCell component="th" scope="row">
                       {row?.orderID}

@@ -51,6 +51,7 @@ const OrderDetails = ({ setAccountId, accountId }) => {
           Authorization: `Bearer ${token}`,
         },
       });
+
       if (response.data) {
         setOrderDetails(response?.data?.order);
         setorderLoad(false);
@@ -62,6 +63,7 @@ const OrderDetails = ({ setAccountId, accountId }) => {
   useEffect(() => {
     getSingleOrderDetails();
   }, [accountId]);
+
   return (
     // <Container></Container>
     <Box>
@@ -77,7 +79,7 @@ const OrderDetails = ({ setAccountId, accountId }) => {
                 flexGrow: 1,
               }}
             >
-              Order Id : {accountId}
+              Order Id : {OrderDetails?.orderID}
             </Typography>
             <IconButton
               sx={{ color: "black" }}

@@ -130,6 +130,7 @@ const ProductDetails = () => {
       </>
     );
   }
+  // console.log(productsDetailsData);
 
   return (
     <Container>

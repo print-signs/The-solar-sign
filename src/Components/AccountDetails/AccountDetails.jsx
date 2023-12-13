@@ -36,7 +36,6 @@ const AccountDetails = () => {
     confirmPassword: "",
   });
 
-  // console.log(token);
   const getUserBasicDetails = async () => {
     try {
       const res = await axios.get("/api/v1/user/details", {
@@ -99,7 +98,6 @@ const AccountDetails = () => {
     }
   };
 
-  // console.log(passworDetails);
   const handelUpdatePassword = async () => {
     if (
       !passworDetails.oldPassword ||

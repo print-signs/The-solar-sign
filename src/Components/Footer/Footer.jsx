@@ -30,7 +30,7 @@ export default function Footer() {
   const getLogo = async () => {
     // console.log(import.meta.env.VITE_BASE_URL);
     const logoData = await axios.get("/api/config");
-    console.log(logoData);
+    // console.log(logoData);
     setAppName(logoData?.data?.result[0]?.address[0]?.company);
     setAddress(logoData?.data?.result[0]?.address[0]?.address);
     setCopyrightMessgae(logoData?.data?.result[0]?.copyrightMessage);

@@ -12,6 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import ProductsData from "../../Data/ProductData/ProductData.jsx";
 import ProductsPageProduct from "../../Components/ShopPageProduct";
 import axios from "axios";
+import ShopPageProduct from "../../Components/ShopPageProduct";
 const styles = {
   img: {
     width: "100%",
@@ -252,13 +253,13 @@ const Products = () => {
                   key={index}
                   sx={{ width: { xs: "46%", md: "23%", sm: "30%" } }}
                 >
-                  <ProductsPageProduct
+                  <ShopPageProduct
                     src={item?.image[0]?.url}
                     alt={item?.alt || "No image"}
                     name={item.name}
-                    discountPrice={item.discountPrice}
+                    // discountPrice={item.discountPrice}
                     price={item.price}
-                    categories={item.categories}
+                    product={item}
                     id={item._id}
                   />
                 </Grid>
@@ -273,14 +274,14 @@ const Products = () => {
                   justifyContent: "center",
                   fontSize: "20px",
                 }}
-              // sx={{
-              //   fontFamily: "Poppins",
-              //   fontWeight: "400",
-              //   fontSize: "34px",
-              //   textAlign:"center",
-              //   justifyContent:"center"
-              // }}
-              //   >
+                // sx={{
+                //   fontFamily: "Poppins",
+                //   fontWeight: "400",
+                //   fontSize: "34px",
+                //   textAlign:"center",
+                //   justifyContent:"center"
+                // }}
+                //   >
               >
                 No Product in THis Category!
               </Grid>

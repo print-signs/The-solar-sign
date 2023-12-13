@@ -77,7 +77,7 @@ const PaypalPayment = ({ handleplaceOrderClick, selectedAddress }) => {
         }
       );
       if (captureResponse.data) {
-        console.log("captureResponse.data", captureResponse.data);
+        // console.log("captureResponse.data", captureResponse.data);
         const name = captureResponse.data.payer.name.given_name;
         const orderId = captureResponse.data.id;
         // alert(`Transaction completed by ${name},order ID:${orderId}`);

@@ -153,7 +153,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setUserAllAddress(res.data?.UserShippingAddress || []);
         // toast.success(res.data.message ? res.data.message : "Address fetch!");
 
@@ -184,13 +184,13 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
     country: "",
   });
 
-  console.log(data);
+  // console.log(data);
   const handleChange = (e) => {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
   //delete self  Address
   const handleDelete = (id) => {
-    console.log(id);
+    // console.log(id);
     swal({
       title: "Are you sure?",
       icon: "error",
@@ -296,7 +296,7 @@ const CheckoutDetails = ({ handleplaceOrderClick }) => {
   const dispatch = useDispatch();
   const cartItem = useSelector((state) => state.cart.cart);
   const allSubTotal = useSelector((state) => state.cart.subtotal);
-  console.log(cartItem);
+  // console.log(cartItem);
   // console.log(cartItem);
   useEffect(() => {
     dispatch(getCartItem());
