@@ -59,19 +59,6 @@ const ShoppingCart = ({ handelCheckoutClick }) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   // console.log(cartItem);
   const allSubTotal = useSelector((state) => state.cart.subtotal);
 

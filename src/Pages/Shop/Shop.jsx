@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import ShopPageProduct from "../../Components/ShopPageProduct";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../../store/Actions/productsActions";
+import axios from 'axios'
 
 const styles = {
   img: {
@@ -78,27 +79,28 @@ const styles = {
 const Shop = () => {
   const [categoryValue, setCategoryValue] = useState("All");
   const [priceValue, setPriceValue] = useState("All");
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
+  const [categories, setCategories] = useState([]);
   const dispatch = useDispatch();
   const productData = useSelector((state) => state.product.products);
-  // console.log(productData);
-  useEffect(() => {
-    dispatch(getAllProducts())
-  }, [dispatch]);
+
+
+  const getCategories = async () => {
+    const { data } = await axios.get('api/category/getCategories');
+    // console.log(data.categories);
+    setCategories(data.categories);
+
+  }
+
+
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    if (value !== 'All')
+      setPage(1)
 
     if (name === "category") {
       setCategoryValue(value);
-      setSelectedCategories((prevCategories) => {
-        if (prevCategories.includes(value)) {
-          return prevCategories.filter((category) => category !== value);
-        } else {
-          return [...prevCategories, value];
-        }
-      });
     } else if (name === "price") {
       setPriceValue(value);
     }
@@ -114,7 +116,8 @@ const Shop = () => {
 
     return categoryMatch && priceMatch;
   });
-  // console.log("product data", filteredItems)
+
+
   // Pagination
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
@@ -126,6 +129,33 @@ const Shop = () => {
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
+
+
+
+
+  useEffect(() => {
+    getCategories();
+    dispatch(getAllProducts())
+  }, [dispatch]);
+
+  // console.log(categories);
+  if (productData.length === 0 || categories.length === 0) {
+    return (
+      <Grid
+        container
+        sx={{
+          mt: "3rem",
+          mb: "8rem",
+          textAlign: "center",
+          justifyContent: "center",
+          fontSize: "20px",
+          fontFamily: 'Poppins'
+        }}
+      >
+        Loading...
+      </Grid>
+    )
+  }
   return (
     <Container>
       <Grid item margin={0}>
@@ -192,13 +222,20 @@ const Shop = () => {
                 onChange={handleChange}
               >
                 <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Personal">Personal</MenuItem>
-                <MenuItem value="Holiday Season">Holiday Season</MenuItem>
+                {
+                  categories?.map((item, index) => (
+                    <MenuItem key={index} value={item.categoryName}>
+                      {item.categoryName}
+                    </MenuItem>
+                  ))
+                }
+
+                {/* <MenuItem value="Holiday Season">Holiday Season</MenuItem>
                 <MenuItem value="Spare Parts">Spare Parts</MenuItem>
                 <MenuItem value="RealEstate Signs">RealEstate Signs</MenuItem>
                 <MenuItem value="Political Signs">Political Signs</MenuItem>
                 <MenuItem value="Hollo catregory 2">Hollo catregory 2</MenuItem>
-                <MenuItem value="Business">Business</MenuItem>
+                <MenuItem value="Business">Business</MenuItem> */}
               </Select>
             </FormControl>
           </Grid>
@@ -250,10 +287,15 @@ const Shop = () => {
                   mb: "8rem",
                   textAlign: "center",
                   justifyContent: "center",
+                  fontFamily: 'Poppins',
                   fontSize: "20px",
                 }}
               >
-                Product Not Found!
+                {categoryValue !== 'All' && priceValue !== 'All' ? `No products found in the category "${categoryValue}" and Price Range "${priceValue}"` :
+
+                  categoryValue !== 'All' ? `No products found in the category "${categoryValue}" ` :
+                    priceValue !== 'All' ? `No products found in the Price Range "${priceValue}" ` :
+                      'No products found.'}
               </Grid>
             )}
           </Grid>

@@ -3,6 +3,7 @@ import {
   FormControl,
   Grid,
   IconButton,
+  CircularProgress,
   List,
   ListItem,
   ListItemButton,
@@ -45,6 +46,11 @@ const Account = () => {
     setActiveTab(event.target.value);
   };
   const [userAllAddress, setUserAllAddress] = useState([]);
+  const [accountDetails, setAccountDetails] = useState({
+    name: "",
+
+    email: "",
+  });
   const [successs, setSuccess] = useState(true);
   const navigate = useNavigate();
   const [load, setLoading] = useState(false);
@@ -80,9 +86,44 @@ const Account = () => {
         );
       });
   };
+  const getUserBasicDetails = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get("/api/v1/user/details", {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.status === 200) {
+        // console.log(res);
+        setAccountDetails({
+          ...accountDetails,
+          name: res?.data?.user?.name, // Assuming 'name' is one of the fields you receive
+          email: res?.data?.user?.email, // Assuming 'email' is one of the fields you receive
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "Something went wrong!"
+      );
+    }
+  };
   useEffect(() => {
     getUserAddress();
+    getUserBasicDetails();
   }, [successs]);
+
+  if (load) {
+    return (
+      <Grid style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+        <CircularProgress color="inherit" />
+      </Grid >
+    )
+  }
   //
   return (
     <Container>
@@ -120,8 +161,8 @@ const Account = () => {
                     position: "relative",
                   }}
                 >
-                  <Avatar src={avatar} sx={{ width: 76, height: 76 }} />
-                  <IconButton
+                  {/* <Avatar src={avatar} sx={{ width: 76, height: 76 }} /> */}
+                  {/* <IconButton
                     size="small"
                     sx={{
                       position: "absolute",
@@ -135,7 +176,7 @@ const Account = () => {
                       fontSize="small"
                       sx={{ color: "white" }}
                     />
-                  </IconButton>
+                  </IconButton> */}
                 </Box>
               </Box>
               <Box my={1}>
@@ -148,7 +189,7 @@ const Account = () => {
                     textAlign: "center",
                   }}
                 >
-                  Sofia Havertz
+                  {accountDetails.name}
                 </Typography>
               </Box>
               {!matches && (
